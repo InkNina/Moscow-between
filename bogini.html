@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Семь сестёр · Москва между</title>
+<style>
+html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
+.wrap{max-width:900px;margin:0 auto;padding:48px 20px 80px}
+h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
+.sub{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#7d7562;margin:0 0 36px}
+.back{display:inline-block;margin-bottom:24px;color:#7d7562;text-decoration:none;font-size:14px;letter-spacing:1px;border-bottom:1px solid #b9a24a}
+.back:hover{color:#3a3326}
+
+.carousel-wrap{position:relative;margin:40px 0}
+.carousel{display:flex;overflow-x:auto;scroll-behavior:smooth;gap:20px;padding:10px 0}
+.carousel::-webkit-scrollbar{display:none}
+.carousel{-ms-overflow-style:none;scrollbar-width:none}
+
+.card{flex:0 0 calc(33.333% - 14px);background:rgba(255,255,255,0.25);border:1px solid #7d7562;padding:20px;min-height:280px}
+.card-visual{height:140px;margin:-20px -20px 16px -20px;display:flex;align-items:center;justify-content:center;font-size:48px;color:rgba(255,255,255,0.8)}
+.card h2{font-size:22px;margin:0 0 8px}
+.card .goddess{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#b9a24a;margin:0 0 12px}
+.card p{font-size:15px;line-height:1.6;margin:0;color:#5a5344}
+
+.arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.6);border:1px solid #7d7562;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;z-index:10}
+.arrow:hover{background:rgba(255,255,255,0.9)}
+.arrow.left{left:-22px}
+.arrow.right{right:-22px}
+
+@media(max-width:700px){
+  .card{flex:0 0 80%}
+  .arrow{width:36px;height:36px;font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a href="index.html" class="back">← на главную</a>
+<h1>Семь сестёр</h1>
+<p class="sub">сталинские высотки · места силы</p>
+
+<div class="carousel-wrap">
+<button class="arrow left" onclick="scrollCarousel(-1)">←</button>
+<div class="carousel" id="carousel">
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#8b9dc3 0%,#5a6b8a 100%)">🏛</div>
+<h2>МГУ</h2>
+<p class="goddess">Артемида / Диана</p>
+<p>Университет, учеба, молодежь, студенты, сообщество, рост. Место силы охотницы, хранительницы диких мест и молодых душ.</p>
+</div>
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#a3b89c 0%,#6b7f6b 100%)">⚖</div>
+<h2>МИД</h2>
+<p class="goddess">Афина / Минерва</p>
+<p>Работа с мужчинами-героями по вопросам урегулирования международных отношений. Богиня мудрости и справедливой войны, хранительница города.</p>
+</div>
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#d4a5a5 0%,#b07878 100%)">♡</div>
+<h2>Гостиница Украина</h2>
+<p class="goddess">Афродита / Венера</p>
+<p>Место встречи с обольстительной богиней любви и красоты. Там, где страсть встречается с дипломатией.</p>
+</div>
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#c4b896 0%,#8f8468 100%)">🏠</div>
+<h2>Баррикадная</h2>
+<p class="goddess">Гестия / Веста</p>
+<p>Семейный очаг по последнему слову техники. Хранительница домашнего огня, богиня, которая не покидает дом.</p>
+</div>
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#d4c5a0 0%,#a89876 100%)">⚙</div>
+<h2>Красные ворота</h2>
+<p class="goddess">Деметра / Церера</p>
+<p>Чудо инженерного решения. Богиня плодородия и дисциплины, порядка в хаосе роста.</p>
+</div>
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)">🌙</div>
+<h2>Ленинградская</h2>
+<p class="goddess">Персефона / Прозерпина</p>
+<p>Всегда рядом с матерью. Та, кто знает два мира и ходит между ними.</p>
+</div>
+<div class="card">
+<div class="card-visual" style="background:linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)">👑</div>
+<h2>Котельническая</h2>
+<p class="goddess">Гера / Юнона</p>
+<p>Власть, интриги, сплетни. Царица богов, хранительница брака и ревнивая жена.</p>
+</div>
+</div>
+<button class="arrow right" onclick="scrollCarousel(1)">→</button>
+</div>
+
+<p style="margin-top:60px;font-size:15px;line-height:1.7;color:#5a5344">Усыпальницы, саркофаги? Или места притяжения? Узнаете на нашей экскурсии от лучших гидов столицы. Проведите субботний день с комфортом и пользой, удобные онлайн-автобусы стартуют от платформы "Патриарший мост" каждые полчаса.</p>
+
+</div>
+
+<script>
+function scrollCarousel(direction){
+  var carousel=document.getElementById('carousel');
+  var cardWidth=carousel.querySelector('.card').offsetWidth+20;
+  carousel.scrollBy({left:direction*cardWidth,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
