@@ -6,7 +6,12 @@
 <title>Семь сестёр · Москва между</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
-:root{--card:260px;--gap:20px}
+:root{
+  --card:260px;
+  --gap:20px;
+  --step:280px;
+  --card-h:500px;
+}
 html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
 .wrap{max-width:960px;margin:0 auto;padding:48px 20px 80px}
 h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
@@ -14,28 +19,149 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .back{display:inline-block;margin-bottom:24px;color:#7d7562;text-decoration:none;font-size:14px;letter-spacing:1px;border-bottom:1px solid #b9a24a}
 .back:hover{color:#3a3326}
 
-.stage{position:relative;overflow:hidden;padding:30px 0}
-.slots{display:flex;justify-content:center;gap:var(--gap)}
-.slot{flex:0 0 var(--card);display:flex;flex-direction:column;border:1px solid #7d7562;background:rgba(255,255,255,0.25);transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s ease,border-color .4s ease}
-.slot.active{transform:scale(1.07);z-index:2;box-shadow:0 10px 28px rgba(58,51,38,.2);border-color:#b9a24a}
+.stage{
+  position:relative;
+  overflow:hidden;
+  height:calc(var(--card-h) + 60px);
+  margin-top:10px;
+}
 
-.portrait{height:158px;display:flex;align-items:center;justify-content:center}
-.portrait svg{height:138px;width:auto}
-.card-text{padding:16px 18px 18px;flex:1}
-.card-text h2{font-size:21px;margin:0 0 6px}
-.card-text .goddess{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#b9a24a;margin:0 0 10px}
-.card-text p{font-size:14px;line-height:1.55;margin:0;color:#5a5344}
-.tower{height:112px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(180deg,#d9d2bf 0%,#b3a98d 100%);border-top:1px solid #7d7562}
-.tower svg{height:98px;width:auto}
+.row{
+  position:absolute;
+  top:30px;
+  left:50%;
+  display:flex;
+  gap:var(--gap);
+  width:calc(var(--card) * 3 + var(--gap) * 2);
+  transform:translateX(-50%);
+  transition:transform .55s cubic-bezier(.22,.61,.36,1);
+  will-change:transform;
+}
 
-.arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.7);border:1px solid #7d7562;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;z-index:10;color:#3a3326;touch-action:manipulation}
+.row.from-right{transform:translateX(calc(-50% + var(--step)))}
+.row.from-left{transform:translateX(calc(-50% - var(--step)))}
+.row.to-left{transform:translateX(calc(-50% - var(--step)))}
+.row.to-right{transform:translateX(calc(-50% + var(--step)))}
+
+.card{
+  flex:0 0 var(--card);
+  height:var(--card-h);
+  display:flex;
+  flex-direction:column;
+  border:1px solid #7d7562;
+  background:rgba(255,255,255,0.25);
+  overflow:hidden;
+  transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s ease,border-color .4s ease;
+}
+
+.card.active{
+  transform:scale(1.07);
+  z-index:2;
+  box-shadow:0 10px 28px rgba(58,51,38,.2);
+  border-color:#b9a24a;
+}
+
+.portrait{
+  height:150px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 150px;
+}
+.portrait svg{height:132px;width:auto}
+
+.card-text{
+  padding:16px 18px 18px;
+  flex:1 1 auto;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+.card-text h2{
+  font-size:20px;
+  line-height:1.25;
+  margin:0 0 6px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.goddess{
+  font-size:11px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:#b9a24a;
+  margin:0 0 10px;
+  min-height:30px;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.desc{
+  font-size:14px;
+  line-height:1.55;
+  margin:0;
+  color:#5a5344;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.tower{
+  height:110px;
+  flex:0 0 110px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  background:linear-gradient(180deg,#d9d2bf 0%,#b3a98d 100%);
+  border-top:1px solid #7d7562;
+}
+.tower svg{height:96px;width:auto}
+
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.7);
+  border:1px solid #7d7562;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+  z-index:10;
+  color:#3a3326;
+  touch-action:manipulation;
+}
 .arrow:hover{background:#fff}
 .arrow.left{left:2px}
 .arrow.right{right:2px}
 
 .note{margin-top:54px;font-size:15px;line-height:1.7;color:#5a5344}
-@media(max-width:600px){:root{--card:220px}.arrow{width:50px;height:50px;font-size:20px}}
-@media(prefers-reduced-motion:reduce){.slot{transition:none}}
+
+@media(max-width:600px){
+  :root{
+    --card:220px;
+    --step:240px;
+  }
+  .arrow{width:50px;height:50px;font-size:20px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .row{transition:none}
+  .card{transition:none}
+}
 </style>
 </head>
 <body>
@@ -49,6 +175,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   <symbol id="g-demeter" viewBox="0 0 100 130"><use href="#g-body"/><line x1="74" y1="72" x2="74" y2="32" stroke="#b9a24a" stroke-width="2.5"/><ellipse cx="69" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="74" cy="31" rx="3" ry="6" fill="#b9a24a"/></symbol>
   <symbol id="g-persephone" viewBox="0 0 100 130"><use href="#g-body"/><circle cx="74" cy="60" r="9" fill="#9e2b2b"/><polygon points="69,51 71,46 74,51 77,46 79,51" fill="#7a1f1f"/><circle cx="71" cy="57" r="2" fill="#d4726a"/></symbol>
   <symbol id="g-hera" viewBox="0 0 100 130"><use href="#g-body"/><polygon points="36,18 40,6 45,14 50,3 55,14 60,6 64,18" fill="#b9a24a"/><circle cx="40" cy="8" r="1.6" fill="#9e2b2b"/><circle cx="50" cy="5" r="1.6" fill="#b9a24a"/><circle cx="60" cy="8" r="1.6" fill="#b9a24a"/></symbol>
+
   <symbol id="t-mgu" viewBox="0 0 100 130"><rect x="6" y="100" width="88" height="25" fill="#5a5344"/><rect x="38" y="45" width="24" height="80" fill="#5a5344"/><rect x="43" y="32" width="14" height="13" fill="#5a5344"/><rect x="47" y="24" width="6" height="8" fill="#5a5344"/><line x1="50" y1="24" x2="50" y2="8" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="6" r="3.5" fill="#b9a24a"/><circle cx="50" cy="38" r="3" fill="#efe7d6"/><rect x="16" y="72" width="12" height="53" fill="#5a5344"/><rect x="72" y="72" width="12" height="53" fill="#5a5344"/><line x1="22" y1="72" x2="22" y2="60" stroke="#5a5344" stroke-width="2"/><line x1="78" y1="72" x2="78" y2="60" stroke="#5a5344" stroke-width="2"/><circle cx="22" cy="58" r="2.5" fill="#b9a24a"/><circle cx="78" cy="58" r="2.5" fill="#b9a24a"/></symbol>
   <symbol id="t-mid" viewBox="0 0 100 130"><rect x="8" y="105" width="84" height="20" fill="#5a5344"/><rect x="40" y="40" width="20" height="85" fill="#5a5344"/><rect x="44" y="30" width="12" height="10" fill="#5a5344"/><line x1="50" y1="30" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><circle cx="50" cy="35" r="3.5" fill="#efe7d6"/><rect x="20" y="80" width="10" height="45" fill="#5a5344"/><rect x="70" y="80" width="10" height="45" fill="#5a5344"/><line x1="25" y1="80" x2="25" y2="70" stroke="#5a5344" stroke-width="2"/><line x1="75" y1="80" x2="75" y2="70" stroke="#5a5344" stroke-width="2"/><circle cx="25" cy="68" r="2" fill="#b9a24a"/><circle cx="75" cy="68" r="2" fill="#b9a24a"/></symbol>
   <symbol id="t-ukraine" viewBox="0 0 100 130"><rect x="6" y="110" width="88" height="15" fill="#5a5344"/><rect x="42" y="35" width="16" height="90" fill="#5a5344"/><line x1="50" y1="35" x2="50" y2="12" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="10" r="3" fill="#b9a24a"/><rect x="8" y="95" width="8" height="30" fill="#5a5344"/><rect x="84" y="95" width="8" height="30" fill="#5a5344"/><line x1="12" y1="95" x2="12" y2="86" stroke="#5a5344" stroke-width="2"/><line x1="88" y1="95" x2="88" y2="86" stroke="#5a5344" stroke-width="2"/><circle cx="12" cy="84" r="2" fill="#b9a24a"/><circle cx="88" cy="84" r="2" fill="#b9a24a"/></symbol>
@@ -63,13 +190,8 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 <h1>Семь сестёр</h1>
 <p class="sub">сталинские высотки · места силы</p>
 
-<div class="stage">
+<div class="stage" id="stage">
 <button type="button" class="arrow left" aria-label="назад">←</button>
-<div class="slots">
-  <div class="slot" id="slotL"></div>
-  <div class="slot active" id="slotM"></div>
-  <div class="slot" id="slotR"></div>
-</div>
 <button type="button" class="arrow right" aria-label="вперёд">→</button>
 </div>
 
@@ -87,27 +209,91 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
     {h:'Гостиница «Ленинградская»',g:'Персефона / Прозерпина',t:'Всегда рядом с матерью. Та, кто знает два мира и ходит между ними, держа в руке гранат.',gi:'g-persephone',ti:'t-leningradskaya',c:'linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)'},
     {h:'Дом на Котельнической',g:'Гера / Юнона',t:'Власть, интриги, сплетни. Царица богов, хранительница брака и ревнивая жена — под тремя шпилями.',gi:'g-hera',ti:'t-kotelnicheskaya',c:'linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)'}
   ];
-  var N=GODS.length, vi=0;
-  var sL=document.getElementById('slotL'), sM=document.getElementById('slotM'), sR=document.getElementById('slotR');
-  var stage=document.querySelector('.stage');
 
-  function card(i){
+  var N=GODS.length;
+  var vi=0;
+  var busy=false;
+  var stage=document.getElementById('stage');
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var DUR=reduce?0:570;
+
+  function cardHTML(i, active){
     var d=GODS[i];
-    return '<div class="portrait" style="background:'+d.c+'"><svg><use href="#'+d.gi+'"/></svg></div>'+
-           '<div class="card-text"><h2>'+d.h+'</h2><p class="goddess">'+d.g+'</p><p>'+d.t+'</p></div>'+
-           '<div class="tower"><svg><use href="#'+d.ti+'"/></svg></div>';
+    return '<div class="card'+(active?' active':'')+'">'+
+      '<div class="portrait" style="background:'+d.c+'"><svg><use href="#'+d.gi+'"/></svg></div>'+
+      '<div class="card-text">'+
+        '<h2>'+d.h+'</h2>'+
+        '<p class="goddess">'+d.g+'</p>'+
+        '<p class="desc">'+d.t+'</p>'+
+      '</div>'+
+      '<div class="tower"><svg><use href="#'+d.ti+'"/></svg></div>'+
+    '</div>';
   }
-  function draw(){
-    sL.innerHTML=card((vi+N-1)%N);
-    sM.innerHTML=card(vi);
-    sR.innerHTML=card((vi+1)%N);
-  }
-  function go(d){ vi=(vi+d+N)%N; draw(); }
 
-  draw();
-  stage.querySelector('.arrow.right').addEventListener('click',function(){go(1);});
-  stage.querySelector('.arrow.left').addEventListener('click',function(){go(-1);});
-  window.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+  function buildRow(index, centerActive){
+    var row=document.createElement('div');
+    row.className='row';
+    var html='';
+    for(var o=-1;o<=1;o++){
+      var i=(index+o+N)%N;
+      var active=(o===0 && centerActive);
+      html+=cardHTML(i, active);
+    }
+    row.innerHTML=html;
+    return row;
+  }
+
+  var current=buildRow(vi, true);
+  stage.appendChild(current);
+
+  function goTo(delta){
+    if(busy)return;
+
+    var next=(vi+delta+N)%N;
+
+    if(reduce){
+      if(current.parentNode) current.parentNode.removeChild(current);
+      current=buildRow(next, true);
+      stage.appendChild(current);
+      vi=next;
+      return;
+    }
+
+    busy=true;
+
+    var incoming=buildRow(next, true);
+    incoming.classList.add(delta>0 ? 'from-right' : 'from-left');
+    stage.appendChild(incoming);
+
+    var outActive=current.querySelector('.card.active');
+    if(outActive) outActive.classList.remove('active');
+
+    void incoming.offsetWidth;
+
+    incoming.classList.remove('from-right');
+    incoming.classList.remove('from-left');
+
+    current.classList.add(delta>0 ? 'to-left' : 'to-right');
+
+    var outgoing=current;
+    current=incoming;
+    vi=next;
+
+    window.setTimeout(function(){
+      if(outgoing && outgoing.parentNode){
+        outgoing.parentNode.removeChild(outgoing);
+      }
+      busy=false;
+    }, DUR+80);
+  }
+
+  stage.querySelector('.arrow.right').addEventListener('click', function(){ goTo(1); });
+  stage.querySelector('.arrow.left').addEventListener('click', function(){ goTo(-1); });
+
+  window.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight') goTo(1);
+    if(e.key==='ArrowLeft') goTo(-1);
+  });
 })();
 </script>
 </body>
