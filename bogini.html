@@ -15,7 +15,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .back:hover{color:#3a3326}
 
 .stage{position:relative;overflow:hidden;padding:30px 0}
-.track{display:flex;width:max-content;will-change:transform;transition:transform .5s cubic-bezier(.22,.61,.36,1);user-select:none;touch-action:pan-y;cursor:grab}
+.track{display:flex;width:max-content;position:relative;left:50%;will-change:transform;transition:transform .5s cubic-bezier(.22,.61,.36,1);user-select:none;touch-action:pan-y;cursor:grab}
 .track.dragging{transition:none;cursor:grabbing}
 .set{display:flex;flex:0 0 auto}
 
@@ -103,17 +103,28 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   track.appendChild(rc);
 
   var cards=[].slice.call(track.querySelectorAll('.card'));
-  var N=7, MID=N;                 // левый клон 0..6, оригинал 7..13, правый 14..20
+  var N=7, MID=N;
   var vi=0, curPos=0, dragging=false, startX=0, startPos=0, busy=false;
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var DUR=reduce?0:500;
 
-  function gap(){var v=getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();var n=parseFloat(v);return isFinite(n)&&n>=0?n:20;}
-  function cardW(){var r=cards[MID].getBoundingClientRect().width;return (isFinite(r)&&r>0)?r:parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card'))||260;}
+  // ЕДИНСТВЕННОЕ измерение: offsetWidth (игнорирует scale и transform предков).
+  // Ширина сцены НЕ измеряется вовсе — центрирование делает CSS left:50%.
+  function cardW(){
+    var w=cards[MID].offsetWidth;
+    if(!w||!isFinite(w)){var v=getComputedStyle(document.documentElement).getPropertyValue('--card').trim();w=parseFloat(v)||260;}
+    return w;
+  }
+  function gap(){
+    var v=getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
+    var n=parseFloat(v);
+    return isFinite(n)&&n>=0?n:20;
+  }
   function step(){return cardW()+gap();}
   function setShift(){return N*step();}
-  function stageW(){return stage.clientWidth||window.innerWidth||320;}
-  function posFor(i){return (stageW()-cardW())/2 - (setShift() + i*step());}
+  // позиция: левый край трека уже в центре сцены (left:50%),
+  // значит чтобы карта i стала центром — сдвигаем на её layout-центр назад.
+  function posFor(i){return -(setShift() + i*step() + cardW()/2);}
 
   function apply(p,animate){
     curPos=p;
@@ -123,7 +134,6 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
     if(!animate||reduce){void track.offsetWidth;track.style.transition='';}
   }
   function mark(){for(var k=0;k<cards.length;k++)cards[k].classList.toggle('active',k===MID+vi);}
-
   function render(animate){apply(posFor(vi),animate);mark();}
 
   function settle(){
@@ -136,7 +146,6 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
     setTimeout(settle,DUR+40);
   }
 
-  // свайп: единовластный transform, браузерный скролл в нём не участвует
   track.addEventListener('pointerdown',function(e){
     if(busy)return;
     dragging=true; startX=e.clientX; startPos=curPos;
@@ -147,7 +156,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
     if(!dragging)return;
     apply(startPos+(e.clientX-startX),false);
   });
-  function endDrag(e){
+  function endDrag(){
     if(!dragging)return;
     dragging=false; track.classList.remove('dragging');
     var dx=curPos-startPos, th=step()/2;
