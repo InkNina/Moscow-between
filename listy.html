@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Авторские листы · Москва между нами</title>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Москва между нами">
+<meta property="og:title" content="Авторские листы · Москва между нами">
+<meta property="og:description" content="Усыпальницы или места силы? Мифологическая экскурсия по семи сёстрам. Если богини не против — они покажут вам город.">
+<meta name="description" content="Усыпальницы или места силы? Мифологическая экскурсия по семи сёстрам. Если богини не против — они покажут вам город.">
+
+<style>
+*,*::before,*::after{box-sizing:border-box}
+
+:root{
+  --paper:#e9e1d2;
+  --ink:#3a3326;
+  --muted:#7d7562;
+  --gold:#b9a24a;
+
+  /* Стена. Меняем только здесь. */
+  --wall-ratio:1.45;
+
+  /* Карта на стене. */
+  --map-inset:clamp(10px, 2.2vmin, 26px);
+  --map-scale:1.02;
+  --map-rot:-0.2deg;
+  --map-opacity:.97;
+  --map-blend:multiply;
+}
+
+html,body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Georgia,serif;
+}
+
+.wrap{
+  max-width:1200px;
+  margin:0 auto;
+  padding:42px 18px 72px;
+}
+
+.back{
+  display:inline-block;
+  margin-bottom:22px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:14px;
+  letter-spacing:1px;
+  border-bottom:1px solid var(--gold);
+}
+
+.back:hover{
+  color:var(--ink);
+}
+
+h1{
+  font-size:clamp(34px, 7vw, 58px);
+  line-height:1.02;
+  margin:0 0 8px;
+  letter-spacing:.5px;
+}
+
+.sub{
+  font-size:13px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin:0 0 34px;
+}
+
+.wall{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+
+  width:min(94vw, calc(82vh * var(--wall-ratio)), 1200px);
+  aspect-ratio:var(--wall-ratio);
+
+  margin:0 auto;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.42), transparent 58%),
+    linear-gradient(180deg, #e4dcc9 0%, #d5cab4 100%);
+  border:1px solid rgba(58,51,38,.24);
+  box-shadow:
+    inset 0 0 70px rgba(58,51,38,.09),
+    0 18px 55px rgba(58,51,38,.13);
+}
+
+@supports (height: 1svh) {
+  .wall{
+    width:min(94vw, calc(82svh * var(--wall-ratio)), 1200px);
+  }
+}
+
+.map{
+  position:absolute;
+  inset:var(--map-inset);
+  width:auto;
+  height:auto;
+  object-fit:cover;
+  object-position:center center;
+
+  opacity:var(--map-opacity);
+  mix-blend-mode:var(--map-blend);
+
+  transform:scale(var(--map-scale)) rotate(var(--map-rot));
+  transform-origin:center center;
+}
+
+.note{
+  width:min(94vw, 1200px);
+  margin:22px auto 0;
+  font-size:14px;
+  line-height:1.65;
+  color:var(--muted);
+}
+
+.note b{
+  color:var(--ink);
+  font-weight:normal;
+  font-style:italic;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <a class="back" href="index.html">← на главную</a>
+
+  <h1>Авторские листы</h1>
+  <p class="sub">стена · карта · коллаж</p>
+
+  <div class="wall" aria-label="Стена с Мичуринским планом Москвы">
+    <img class="map" src="michurin.jpg" alt="Мичуринский план Москвы" decoding="async">
+  </div>
+
+  <p class="note">
+    <b>Стена фиксирована.</b> Карта лежит на ней. Листы сядут поверх, по одному.
+  </p>
+</div>
+
+</body>
+</html>
