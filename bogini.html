@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Семь сестёр · Москва между</title>
-<style>
+<style>ac
 *,*::before,*::after{box-sizing:border-box}
 :root{
   --card:260px;
   --step:280px;
-  --card-h:520px;
+  --card-h:600px;
 }
 html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
 .wrap{max-width:960px;margin:0 auto;padding:48px 20px 80px}
@@ -66,10 +66,10 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .portrait svg{height:132px;width:auto}
 
 .card-text{
+  position:relative;
   flex:1 1 auto;
   min-height:0;
-  padding:16px 18px 18px;
-  overflow:hidden;
+  padding:16px 18px 22px;
   display:flex;
   flex-direction:column;
 }
@@ -78,11 +78,6 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   font-size:20px;
   line-height:1.25;
   margin:0 0 6px;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  line-clamp:2;
-  -webkit-box-orient:vertical;
   word-break:break-word;
 }
 
@@ -91,14 +86,16 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   letter-spacing:1.5px;
   text-transform:uppercase;
   color:#b9a24a;
-  margin:0 0 10px;
-  min-height:30px;
+  margin:0 0 8px;
   line-height:1.35;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  line-clamp:2;
-  -webkit-box-orient:vertical;
+}
+
+.tagline{
+  font-style:italic;
+  font-size:13px;
+  line-height:1.4;
+  color:#6f6757;
+  margin:0 0 10px;
 }
 
 .desc{
@@ -106,24 +103,27 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   line-height:1.55;
   margin:0;
   color:#5a5344;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp:4;
-  line-clamp:4;
-  -webkit-box-orient:vertical;
 }
 
-.tower{
-  height:110px;
-  flex:0 0 110px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  background:linear-gradient(180deg,#d9d2bf 0%,#b3a98d 100%);
-  border-top:1px solid #7d7562;
-  overflow:hidden;
+.echo{
+  font-style:italic;
+  font-size:14px;
+  line-height:1.5;
+  color:#5a5344;
+  margin-top:14px;
+  padding-right:44px;
 }
-.tower svg{height:96px;width:auto}
+
+.stamp{
+  position:absolute;
+  right:12px;
+  bottom:12px;
+  width:50px;
+  height:58px;
+  opacity:.12;
+  transform:rotate(-6deg);
+  pointer-events:none;
+}
 
 .arrow{
   position:absolute;
@@ -152,7 +152,11 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   :root{
     --card:220px;
     --step:240px;
+    --card-h:640px;
   }
+  .portrait{height:120px;flex:0 0 120px}
+  .portrait svg{height:106px}
+  .stamp{width:44px;height:52px;right:10px;bottom:10px}
   .arrow{width:50px;height:50px;font-size:20px}
 }
 
@@ -179,7 +183,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   <symbol id="t-barrikadnaya" viewBox="0 0 100 130"><rect x="42" y="100" width="52" height="25" fill="#5a5344"/><rect x="20" y="40" width="22" height="85" fill="#5a5344"/><line x1="31" y1="40" x2="31" y2="18" stroke="#5a5344" stroke-width="2.5"/><circle cx="31" cy="16" r="3" fill="#b9a24a"/><circle cx="31" cy="50" r="3" fill="#efe7d6"/><rect x="84" y="85" width="8" height="40" fill="#5a5344"/><line x1="88" y1="85" x2="88" y2="77" stroke="#5a5344" stroke-width="2"/><circle cx="88" cy="75" r="2" fill="#b9a24a"/></symbol>
   <symbol id="t-vorota" viewBox="0 0 100 130"><rect x="8" y="108" width="84" height="17" fill="#5a5344"/><rect x="40" y="48" width="20" height="77" fill="#5a5344"/><line x1="50" y1="48" x2="50" y2="26" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="24" r="3" fill="#b9a24a"/><circle cx="50" cy="58" r="5" fill="#efe7d6"/><line x1="50" y1="58" x2="50" y2="54.5" stroke="#5a5344" stroke-width="1.2"/><line x1="50" y1="58" x2="52.5" y2="59" stroke="#5a5344" stroke-width="1.2"/></symbol>
   <symbol id="t-leningradskaya" viewBox="0 0 100 130"><rect x="4" y="100" width="92" height="25" fill="#5a5344"/><rect x="42" y="42" width="16" height="83" fill="#5a5344"/><line x1="50" y1="42" x2="50" y2="16" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="14" r="3" fill="#b9a24a"/><circle cx="50" cy="52" r="5" fill="#efe7d6"/><line x1="50" y1="52" x2="50" y2="48.5" stroke="#5a5344" stroke-width="1.2"/><line x1="50" y1="52" x2="52.5" y2="53" stroke="#5a5344" stroke-width="1.2"/></symbol>
-  <symbol id="t-kotelnicheskaya" viewBox="0 0 100 130"><rect x="6" y="108" width="88" height="17" fill="#5a5344"/><rect x="40" y="38" width="20" height="87" fill="#5a5344"/><line x1="50" y1="38" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><rect x="18" y="60" width="12" height="65" fill="#5a5344"/><rect x="70" y="60" width="12" height="65" fill="#5a5344"/><line x1="24" y1="60" x2="24" y2="44" stroke="#5a5344" stroke-width="2"/><line x1="76" y1="60" x2="76" y2="44" stroke="#5a5344" stroke-width="2"/><circle cx="24" cy="42" r="2.2" fill="#b9a24a"/><circle cx="76" cy="42" r="2.2" fill="#b9a24a"/></symbol>
+  <symbol id="t-kotelnicheskaya" viewBox="0 0 100 130"><rect x="6" y="108" width="88" height="17" fill="#5a5344"/><rect x="40" y="38" width="20" height="87" fill="#5a5344"/><line x1="50" y1="38" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><rect x="18" y="72" width="14" height="53" fill="#5a5344"/><rect x="68" y="72" width="14" height="53" fill="#5a5344"/></symbol>
 </svg>
 
 <div class="wrap">
@@ -198,13 +202,13 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 <script>
 (function(){
   var GODS=[
-    {h:'МГУ',g:'Артемида / Диана',t:'Университет, учеба, молодежь, студенты, сообщество, рост. Место силы охотницы, хранительницы диких мест и молодых душ.',gi:'g-artemis',ti:'t-mgu',c:'linear-gradient(135deg,#8b9dc3 0%,#5a6b8a 100%)'},
-    {h:'МИД',g:'Афина / Минерва',t:'Работа с мужчинами-героями по вопросам урегулирования международных отношений. Богиня мудрости и справедливой войны, хранительница города.',gi:'g-athena',ti:'t-mid',c:'linear-gradient(135deg,#a3b89c 0%,#6b7f6b 100%)'},
-    {h:'Гостиница «Украина»',g:'Афродита / Венера',t:'Место встречи с обольстительной богиней любви и красоты. Там, где страсть встречается с дипломатией.',gi:'g-aphrodite',ti:'t-ukraine',c:'linear-gradient(135deg,#d4a5a5 0%,#b07878 100%)'},
-    {h:'Дом на Баррикадной',g:'Гестия / Веста',t:'Семейный очаг по последнему слову техники. Хранительница домашнего огня, богиня, которая не покидает дом.',gi:'g-hestia',ti:'t-barrikadnaya',c:'linear-gradient(135deg,#c4b896 0%,#8f8468 100%)'},
-    {h:'Здание на Красных воротах',g:'Деметра / Церера и Дисциплина',t:'Чудо инженерного решения. Богиня плодородия и Дисциплина — порядок в хаосе роста, материнство и контроль в одном фасаде.',gi:'g-demeter',ti:'t-vorota',c:'linear-gradient(135deg,#d4c5a0 0%,#a89876 100%)'},
-    {h:'Гостиница «Ленинградская»',g:'Персефона / Прозерпина',t:'Всегда рядом с матерью. Та, кто знает два мира и ходит между ними, держа в руке гранат.',gi:'g-persephone',ti:'t-leningradskaya',c:'linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)'},
-    {h:'Дом на Котельнической',g:'Гера / Юнона',t:'Власть, интриги, сплетни. Царица богов, хранительница брака и ревнивая жена — под тремя шпилями.',gi:'g-hera',ti:'t-kotelnicheskaya',c:'linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)'}
+    {h:'МГУ',g:'Артемида / Диана',tag:'Охотница молодых душ.',t:'Университет — это лес, где всё ещё дико и всё ещё растёт. Она ходит между аудиторий с луком на плече и следит, чтобы никто не вырвался в город раньше срока и не уснул к экзамену.',echo:'Строгая. Зато не даёт заблудиться.',gi:'g-artemis',ti:'t-mgu',c:'linear-gradient(135deg,#8b9dc3 0%,#5a6b8a 100%)'},
+    {h:'МИД',g:'Афина / Минерва',tag:'Разум в доспехах.',t:'Пока мужчины в костюмах делят мир на сферы влияния, она сидит напротив и держит сову на протоколе. Справедливая война — это та, что ведётся словами и не оставляет трупов.',echo:'Хранительница города, который они только обсуждают.',gi:'g-athena',ti:'t-mid',c:'linear-gradient(135deg,#a3b89c 0%,#6b7f6b 100%)'},
+    {h:'Гостиница «Украина»',g:'Афродита / Венера',tag:'Зеркало в холле.',t:'Гостиница — её салон. Здесь останавливаются те, кто ищет, и уезжают те, кто нашёл. Она не прячется: она просто не для всех открывается.',echo:'Фрр. Но зеркало помнит каждого.',gi:'g-aphrodite',ti:'t-ukraine',c:'linear-gradient(135deg,#d4a5a5 0%,#b07878 100%)'},
+    {h:'Дом на Баррикадной',g:'Гестия / Веста',tag:'Огонь, который не гасят.',t:'Единственная из семи, чья башня — просто дом. Не дворец, не ведомство, а квартиры, где кто-то ставит чайник, и это тоже лампада. Она не уходит в город — она ждёт, когда вернутся.',echo:'Семейный очаг по последнему слову техники.',gi:'g-hestia',ti:'t-barrikadnaya',c:'linear-gradient(135deg,#c4b896 0%,#8f8468 100%)'},
+    {h:'Здание на Красных воротах',g:'Деметра / Церера и Дисциплина',tag:'Мать, бабушка, сестра и начальник.',t:'Кормушка с порядком — не отпустит, пока не доешь. Дисциплина живёт с ней в одной квартире: голос в сейфе, хлеб по карточкам, любовь через контроль.',echo:'Питает. Контролирует любовью.',gi:'g-demeter',ti:'t-vorota',c:'linear-gradient(135deg,#d4c5a0 0%,#a89876 100%)'},
+    {h:'Гостиница «Ленинградская»',g:'Персефона / Прозерпина',tag:'Та, что держит зерно.',t:'Между матерью и мужем, между весной и подземельем, между чемоданом и ключом. Она выбрала не один мир, а оба — и носит гранат как пропуск, который действует в обе стороны.',echo:'Всегда на пороге. И это не слабость — это её царство.',gi:'g-persephone',ti:'t-leningradskaya',c:'linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)'},
+    {h:'Дом на Котельнической',g:'Гера / Юнона',tag:'Жена, которая видит всё.',t:'Один шпиль — и она видит с него весь город. Не ревнует по мелочам: она ведёт учёт. Интриги и сплетни — это бухгалтерия брака, где она главный бухгалтер.',echo:'Царица. И да, этой ночью она не спала.',gi:'g-hera',ti:'t-kotelnicheskaya',c:'linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)'}
   ];
 
   var N=GODS.length;
@@ -224,9 +228,11 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
       '<div class="card-text">'+
         '<h2>'+d.h+'</h2>'+
         '<p class="goddess">'+d.g+'</p>'+
+        '<p class="tagline">'+d.tag+'</p>'+
         '<p class="desc">'+d.t+'</p>'+
-      '</div>'+
-      '<div class="tower"><svg><use href="#'+d.ti+'"/></svg></div>';
+        '<p class="echo">'+d.echo+'</p>'+
+        '<svg class="stamp"><use href="#'+d.ti+'"/></svg>'+
+      '</div>';
     return el;
   }
 
