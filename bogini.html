@@ -261,21 +261,22 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 
     busy=true;
 
+    var outgoing=current;
     var incoming=buildRow(next, true);
     incoming.classList.add(delta>0 ? 'from-right' : 'from-left');
     stage.appendChild(incoming);
 
-    var outActive=current.querySelector('.card.active');
+    var outActive=outgoing.querySelector('.card.active');
     if(outActive) outActive.classList.remove('active');
 
-    void incoming.offsetWidth;
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        incoming.classList.remove('from-right');
+        incoming.classList.remove('from-left');
+        outgoing.classList.add(delta>0 ? 'to-left' : 'to-right');
+      });
+    });
 
-    incoming.classList.remove('from-right');
-    incoming.classList.remove('from-left');
-
-    current.classList.add(delta>0 ? 'to-left' : 'to-right');
-
-    var outgoing=current;
     current=incoming;
     vi=next;
 
@@ -284,8 +285,9 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
         outgoing.parentNode.removeChild(outgoing);
       }
       busy=false;
-    }, DUR+80);
+    }, DUR+120);
   }
+
 
   stage.querySelector('.arrow.right').addEventListener('click', function(){ goTo(1); });
   stage.querySelector('.arrow.left').addEventListener('click', function(){ goTo(-1); });
