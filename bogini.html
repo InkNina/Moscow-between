@@ -63,7 +63,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   <symbol id="g-hestia" viewBox="0 0 100 130"><use href="#g-body"/><path d="M50,2 C42,14 40,22 50,28 C60,22 58,14 50,2 Z" fill="#e0a458"/><path d="M50,10 C46,16 46,20 50,24 C54,20 54,16 50,10 Z" fill="#f4d47c"/></symbol>
   <symbol id="g-demeter" viewBox="0 0 100 130"><use href="#g-body"/><line x1="74" y1="72" x2="74" y2="32" stroke="#b9a24a" stroke-width="2.5"/><ellipse cx="69" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="74" cy="31" rx="3" ry="6" fill="#b9a24a"/></symbol>
   <symbol id="g-persephone" viewBox="0 0 100 130"><use href="#g-body"/><circle cx="74" cy="60" r="9" fill="#9e2b2b"/><polygon points="69,51 71,46 74,51 77,46 79,51" fill="#7a1f1f"/><circle cx="71" cy="57" r="2" fill="#d4726a"/></symbol>
-  <symbol id="g-hera" viewBox="0 0 100 130"><use href="#g-body"/><polygon points="36,18 40,6 45,14 50,3 55,14 60,6 64,18" fill="#b9a24a"/><circle cx="40" cy="8" r="1.6" fill="#9e2b2b"/><circle cx="50" cy="5" r="1.6" fill="#9e2b2b"/><circle cx="60" cy="8" r="1.6" fill="#9e2b2b"/></symbol>
+  <symbol id="g-hera" viewBox="0 0 100 130"><use href="#g-body"/><polygon points="36,18 40,6 45,14 50,3 55,14 60,6 64,18" fill="#b9a24a"/><circle cx="40" cy="8" r="1.6" fill="#9e2b2b"/><circle cx="50" cy="5" r="1.6" fill="#b9a24a"/><circle cx="60" cy="8" r="1.6" fill="#b9a24a"/></symbol>
 
   <symbol id="t-mgu" viewBox="0 0 100 130"><rect x="6" y="100" width="88" height="25" fill="#5a5344"/><rect x="38" y="45" width="24" height="80" fill="#5a5344"/><rect x="43" y="32" width="14" height="13" fill="#5a5344"/><rect x="47" y="24" width="6" height="8" fill="#5a5344"/><line x1="50" y1="24" x2="50" y2="8" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="6" r="3.5" fill="#b9a24a"/><circle cx="50" cy="38" r="3" fill="#efe7d6"/><rect x="16" y="72" width="12" height="53" fill="#5a5344"/><rect x="72" y="72" width="12" height="53" fill="#5a5344"/><line x1="22" y1="72" x2="22" y2="60" stroke="#5a5344" stroke-width="2"/><line x1="78" y1="72" x2="78" y2="60" stroke="#5a5344" stroke-width="2"/><circle cx="22" cy="58" r="2.5" fill="#b9a24a"/><circle cx="78" cy="58" r="2.5" fill="#b9a24a"/></symbol>
   <symbol id="t-mid" viewBox="0 0 100 130"><rect x="8" y="105" width="84" height="20" fill="#5a5344"/><rect x="40" y="40" width="20" height="85" fill="#5a5344"/><rect x="44" y="30" width="12" height="10" fill="#5a5344"/><line x1="50" y1="30" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><circle cx="50" cy="35" r="3.5" fill="#efe7d6"/><rect x="20" y="80" width="10" height="45" fill="#5a5344"/><rect x="70" y="80" width="10" height="45" fill="#5a5344"/><line x1="25" y1="80" x2="25" y2="70" stroke="#5a5344" stroke-width="2"/><line x1="75" y1="80" x2="75" y2="70" stroke="#5a5344" stroke-width="2"/><circle cx="25" cy="68" r="2" fill="#b9a24a"/><circle cx="75" cy="68" r="2" fill="#b9a24a"/></symbol>
@@ -104,58 +104,70 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   var set0=document.getElementById('set0');
   if(!track||!set0)return;
 
-  // клон для бесшовного круга — добавляем один раз, измерений не делаем
-  track.appendChild(set0.cloneNode(true));
+  // клоны с ОБЕИХ сторон — чтобы цикл работал и влево, и вправо с любой карты
+  var leftClone=set0.cloneNode(true); leftClone.removeAttribute('id');
+  var rightClone=set0.cloneNode(true); rightClone.removeAttribute('id');
+  track.insertBefore(leftClone,set0);
+  track.appendChild(rightClone);
 
   var cards=[].slice.call(track.querySelectorAll('.card'));
-  var N=7;
+  var N=7; // 0..6 левый клон, 7..13 оригинал, 14..20 правый клон
 
-  function stepPx(){ // расстояние между центрами соседних карт; меряем ПОСЛЕ лейаута, в момент действия
-    if(cards.length<2)return 280;
-    var a=cards[0].getBoundingClientRect(),b=cards[1].getBoundingClientRect();
-    var d=b.left-a.left;
-    return (d&&isFinite(d))?d:280;
+  // шаг и сет — из СТАТИЧНЫХ css-переменных, не из измерения лейаута (это и убивало iPhone)
+  function cssNum(name,fb){
+    var v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    var n=parseFloat(v);
+    return (isFinite(n)&&n>0)?n:fb;
   }
-  function setSpan(){ // ширина одного сета вместе с зазором до следующего
-    if(cards.length<N+1)return N*stepPx();
-    var a=cards[0].getBoundingClientRect(),b=cards[N].getBoundingClientRect();
-    var d=b.left-a.left;
-    return (d&&isFinite(d))?d:N*stepPx();
-  }
-  function centerOf(el){var r=el.getBoundingClientRect();return r.left+r.width/2;}
-  function midOf(){var r=track.getBoundingClientRect();return r.left+r.width/2;}
+  function step(){return cssNum('--card',260)+cssNum('--gap',20);}
+  function span(){return N*step();}
 
-  function highlight(){ // активная = чей центр ближе всех к центру окна; меряем в scroll/click, лейаут готов
-    var m=midOf(),best=-1,bd=1e9;
-    for(var i=0;i<cards.length;i++){var d=Math.abs(centerOf(cards[i])-m);if(d<bd){bd=d;best=i;}}
-    for(var k=0;k<cards.length;k++)cards[k].classList.toggle('active',k===best);
-    return best;
-  }
+  // индекс центральной карты — чистой арифметикой от scrollLeft, который держит браузер
+  function idxNow(){return Math.round(track.scrollLeft/step());}
 
-  function wrapLoop(idx){ // если залезли в клон — мгновенно прыгаем в оригинал, глаз не ловит
-    var span=setSpan();
-    if(idx>=N){track.style.scrollBehavior='auto';track.scrollLeft-=span;track.style.scrollBehavior='';}
-    else if(idx<0){track.style.scrollBehavior='auto';track.scrollLeft+=span;track.style.scrollBehavior='';}
+  function setActive(i){for(var k=0;k<cards.length;k++)cards[k].classList.toggle('active',k===i);}
+  function highlight(){setActive(idxNow());}
+
+  // прыжок в цикл — ТОЛЬКО когда лента устоялась, и с глушением snap, чтобы хозяин был один
+  function wrap(){
+    var i=idxNow();
+    if(i<N){track.style.scrollSnapType='none';track.scrollLeft+=span();track.style.scrollSnapType='';}
+    else if(i>=2*N){track.style.scrollSnapType='none';track.scrollLeft-=span();track.style.scrollSnapType='';}
+    highlight();
   }
 
-  function onScroll(){var i=highlight();wrapLoop(i);}
-  var raf=0;
-  track.addEventListener('scroll',function(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;onScroll();});},{passive:true});
+  function start(){track.scrollLeft=span();highlight();}
+  start();
+  window.addEventListener('load',start);
 
-  function nudge(dir){
-    var s=stepPx();
-    track.scrollBy({left:dir*s,behavior:'smooth'}); // snap сам дотянет до следующей центральной
-  }
-  var R=track.parentNode.querySelector('.arrow.right'),L=track.parentNode.querySelector('.arrow.left');
+  // подсветка следует за движением плавно (арифметика дешёвая, безопасна в движении)
+  var rafId=0;
+  track.addEventListener('scroll',function(){
+    if(rafId)return;
+    rafId=requestAnimationFrame(function(){rafId=0;highlight();});
+  },{passive:true});
+
+  // цикл — по debounce, только после остановки
+  var tid=0;
+  track.addEventListener('scroll',function(){
+    clearTimeout(tid);
+    tid=setTimeout(wrap,160);
+  },{passive:true});
+
+  function nudge(d){track.scrollBy({left:d*step(),behavior:'smooth'});}
+  var R=track.parentNode.querySelector('.arrow.right');
+  var L=track.parentNode.querySelector('.arrow.left');
   if(R)R.addEventListener('click',function(){nudge(1);});
   if(L)L.addEventListener('click',function(){nudge(-1);});
   window.addEventListener('keydown',function(e){if(e.key==='ArrowRight')nudge(1);if(e.key==='ArrowLeft')nudge(-1);});
 
-  // первичная подсветка — отложена, чтобы лейаут точно состоялся; если не выйдет — карты всё равно видны
-  function init(){highlight();}
-  if(document.readyState==='complete')init();
-  else window.addEventListener('load',init);
-  requestAnimationFrame(init);
+  window.addEventListener('resize',function(){
+    var i=idxNow();
+    track.style.scrollSnapType='none';
+    track.scrollLeft=i*step();
+    track.style.scrollSnapType='';
+    highlight();
+  });
 })();
 </script>
 </body>
