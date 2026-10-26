@@ -8,9 +8,8 @@
 *,*::before,*::after{box-sizing:border-box}
 :root{
   --card:260px;
-  --gap:20px;
   --step:280px;
-  --card-h:500px;
+  --card-h:520px;
 }
 html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
 .wrap{max-width:960px;margin:0 auto;padding:48px 20px 80px}
@@ -26,53 +25,50 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   margin-top:10px;
 }
 
-.row{
+.card{
   position:absolute;
   top:30px;
   left:50%;
-  display:flex;
-  gap:var(--gap);
-  width:calc(var(--card) * 3 + var(--gap) * 2);
-  transform:translateX(-50%);
-  transition:transform .55s cubic-bezier(.22,.61,.36,1);
-  will-change:transform;
-}
-
-.row.from-right{transform:translateX(calc(-50% + var(--step)))}
-.row.from-left{transform:translateX(calc(-50% - var(--step)))}
-.row.to-left{transform:translateX(calc(-50% - var(--step)))}
-.row.to-right{transform:translateX(calc(-50% + var(--step)))}
-
-.card{
-  flex:0 0 var(--card);
+  width:var(--card);
   height:var(--card-h);
+  margin-left:calc(var(--card) / -2);
   display:flex;
   flex-direction:column;
+  overflow:hidden;
   border:1px solid #7d7562;
   background:rgba(255,255,255,0.25);
-  overflow:hidden;
-  transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s ease,border-color .4s ease;
+  z-index:1;
+  will-change:transform,opacity;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1),opacity .35s ease,box-shadow .4s ease,border-color .4s ease;
 }
 
-.card.active{
-  transform:scale(1.07);
-  z-index:2;
-  box-shadow:0 10px 28px rgba(58,51,38,.2);
+.card.pos-left{transform:translateX(calc(var(--step) * -1)) scale(1)}
+.card.pos-center{transform:translateX(0) scale(1)}
+.card.pos-right{transform:translateX(var(--step)) scale(1)}
+.card.pos-far-left{transform:translateX(calc(var(--step) * -2)) scale(1);opacity:0;z-index:0}
+.card.pos-far-right{transform:translateX(calc(var(--step) * 2)) scale(1);opacity:0;z-index:0}
+
+.card.pos-center.active{
+  transform:translateX(0) scale(1.07);
+  z-index:3;
   border-color:#b9a24a;
+  box-shadow:0 10px 28px rgba(58,51,38,.2);
 }
 
 .portrait{
   height:150px;
+  flex:0 0 150px;
   display:flex;
   align-items:center;
   justify-content:center;
-  flex:0 0 150px;
+  overflow:hidden;
 }
 .portrait svg{height:132px;width:auto}
 
 .card-text{
-  padding:16px 18px 18px;
   flex:1 1 auto;
+  min-height:0;
+  padding:16px 18px 18px;
   overflow:hidden;
   display:flex;
   flex-direction:column;
@@ -82,11 +78,12 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   font-size:20px;
   line-height:1.25;
   margin:0 0 6px;
+  overflow:hidden;
   display:-webkit-box;
   -webkit-line-clamp:2;
   line-clamp:2;
   -webkit-box-orient:vertical;
-  overflow:hidden;
+  word-break:break-word;
 }
 
 .goddess{
@@ -97,11 +94,11 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   margin:0 0 10px;
   min-height:30px;
   line-height:1.35;
+  overflow:hidden;
   display:-webkit-box;
   -webkit-line-clamp:2;
   line-clamp:2;
   -webkit-box-orient:vertical;
-  overflow:hidden;
 }
 
 .desc{
@@ -109,11 +106,11 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   line-height:1.55;
   margin:0;
   color:#5a5344;
+  overflow:hidden;
   display:-webkit-box;
   -webkit-line-clamp:4;
   line-clamp:4;
   -webkit-box-orient:vertical;
-  overflow:hidden;
 }
 
 .tower{
@@ -124,6 +121,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   justify-content:center;
   background:linear-gradient(180deg,#d9d2bf 0%,#b3a98d 100%);
   border-top:1px solid #7d7562;
+  overflow:hidden;
 }
 .tower svg{height:96px;width:auto}
 
@@ -159,7 +157,6 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .row{transition:none}
   .card{transition:none}
 }
 </style>
@@ -216,85 +213,122 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   var stage=document.getElementById('stage');
   var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var DUR=reduce?0:570;
+  var els=[];
 
-  function cardHTML(i, active){
+  function makeCard(i,posClass,active){
     var d=GODS[i];
-    return '<div class="card'+(active?' active':'')+'">'+
+    var el=document.createElement('div');
+    el.className='card '+posClass+(active?' active':'');
+    el.innerHTML=
       '<div class="portrait" style="background:'+d.c+'"><svg><use href="#'+d.gi+'"/></svg></div>'+
       '<div class="card-text">'+
         '<h2>'+d.h+'</h2>'+
         '<p class="goddess">'+d.g+'</p>'+
         '<p class="desc">'+d.t+'</p>'+
       '</div>'+
-      '<div class="tower"><svg><use href="#'+d.ti+'"/></svg></div>'+
-    '</div>';
+      '<div class="tower"><svg><use href="#'+d.ti+'"/></svg></div>';
+    return el;
   }
 
-  function buildRow(index, centerActive){
-    var row=document.createElement('div');
-    row.className='row';
-    var html='';
-    for(var o=-1;o<=1;o++){
-      var i=(index+o+N)%N;
-      var active=(o===0 && centerActive);
-      html+=cardHTML(i, active);
+  function clearCards(){
+    for(var i=0;i<els.length;i++){
+      if(els[i] && els[i].parentNode){
+        els[i].parentNode.removeChild(els[i]);
+      }
     }
-    row.innerHTML=html;
-    return row;
+    els=[];
   }
 
-  var current=buildRow(vi, true);
-  stage.appendChild(current);
+  function init(){
+    clearCards();
+    els=[
+      makeCard((vi-1+N)%N,'pos-left',false),
+      makeCard(vi,'pos-center',true),
+      makeCard((vi+1)%N,'pos-right',false)
+    ];
+    for(var i=0;i<els.length;i++){
+      stage.appendChild(els[i]);
+    }
+  }
 
-  function goTo(delta){
+  function setPos(el,posClass,active){
+    el.classList.remove('pos-left','pos-center','pos-right','pos-far-left','pos-far-right','active');
+    el.classList.add(posClass);
+    if(active){
+      el.classList.add('active');
+    }
+  }
+
+  function go(delta){
     if(busy)return;
 
-    var next=(vi+delta+N)%N;
-
     if(reduce){
-      if(current.parentNode) current.parentNode.removeChild(current);
-      current=buildRow(next, true);
-      stage.appendChild(current);
-      vi=next;
+      vi=(vi+delta+N)%N;
+      init();
       return;
     }
 
     busy=true;
 
-    var outgoing=current;
-    var incoming=buildRow(next, true);
-    incoming.classList.add(delta>0 ? 'from-right' : 'from-left');
-    stage.appendChild(incoming);
+    var oldL=els[0];
+    var oldC=els[1];
+    var oldR=els[2];
+    var newEl;
 
-    var outActive=outgoing.querySelector('.card.active');
-    if(outActive) outActive.classList.remove('active');
+    if(delta>0){
+      newEl=makeCard((vi+2)%N,'pos-far-right',false);
+      stage.appendChild(newEl);
+      void newEl.offsetWidth;
 
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        incoming.classList.remove('from-right');
-        incoming.classList.remove('from-left');
-        outgoing.classList.add(delta>0 ? 'to-left' : 'to-right');
-      });
-    });
+      setPos(oldL,'pos-far-left',false);
+      setPos(oldC,'pos-left',false);
+      setPos(oldR,'pos-center',true);
+      setPos(newEl,'pos-right',false);
 
-    current=incoming;
-    vi=next;
+      vi=(vi+1)%N;
+      els=[oldC,oldR,newEl];
 
-    window.setTimeout(function(){
-      if(outgoing && outgoing.parentNode){
-        outgoing.parentNode.removeChild(outgoing);
-      }
-      busy=false;
-    }, DUR+120);
+      window.setTimeout(function(){
+        if(oldL && oldL.parentNode){
+          oldL.parentNode.removeChild(oldL);
+        }
+        busy=false;
+      },DUR+80);
+    }else{
+      newEl=makeCard((vi-2+N)%N,'pos-far-left',false);
+      stage.appendChild(newEl);
+      void newEl.offsetWidth;
+
+      setPos(oldR,'pos-far-right',false);
+      setPos(oldC,'pos-right',false);
+      setPos(oldL,'pos-center',true);
+      setPos(newEl,'pos-left',false);
+
+      vi=(vi-1+N)%N;
+      els=[newEl,oldL,oldC];
+
+      window.setTimeout(function(){
+        if(oldR && oldR.parentNode){
+          oldR.parentNode.removeChild(oldR);
+        }
+        busy=false;
+      },DUR+80);
+    }
   }
 
+  init();
 
-  stage.querySelector('.arrow.right').addEventListener('click', function(){ goTo(1); });
-  stage.querySelector('.arrow.left').addEventListener('click', function(){ goTo(-1); });
+  stage.querySelector('.arrow.right').addEventListener('click',function(){
+    go(1);
+  });
 
-  window.addEventListener('keydown', function(e){
-    if(e.key==='ArrowRight') goTo(1);
-    if(e.key==='ArrowLeft') goTo(-1);
+  stage.querySelector('.arrow.left').addEventListener('click',function(){
+    go(-1);
+  });
+
+  window.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
   });
 })();
 </script>
