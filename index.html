@@ -3,45 +3,340 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Между нами Москва</title>
+<title>Семь сестёр · Москва между</title>
 <style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --card:260px;
+  --step:280px;
+  --card-h:600px;
+}
 html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
-.wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
+.wrap{max-width:960px;margin:0 auto;padding:48px 20px 80px}
 h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .sub{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#7d7562;margin:0 0 36px}
-.manifest{font-size:19px;line-height:1.7;border-left:3px solid #b9a24a;padding-left:18px;margin:0 0 44px}
-.doors{display:flex;flex-wrap:wrap;gap:18px}
-.door{flex:1 1 220px;border:1px solid #7d7562;padding:22px;text-decoration:none;color:#3a3326;background:rgba(255,255,255,0.25)}
-.door h2{font-size:20px;margin:0 0 10px}
-.door p{font-size:15px;line-height:1.5;margin:0 0 14px;color:#5a5344}
-.door span{font-size:14px;letter-spacing:1px;border-bottom:1px solid #b9a24a}
-.door:hover{background:rgba(255,255,255,0.5)}
-footer{margin-top:60px;font-size:13px;color:#7d7562}
+.back{display:inline-block;margin-bottom:24px;color:#7d7562;text-decoration:none;font-size:14px;letter-spacing:1px;border-bottom:1px solid #b9a24a}
+.back:hover{color:#3a3326}
+
+.stage{
+  position:relative;
+  overflow:hidden;
+  height:calc(var(--card-h) + 60px);
+  margin-top:10px;
+}
+
+.card{
+  position:absolute;
+  top:30px;
+  left:50%;
+  width:var(--card);
+  height:var(--card-h);
+  margin-left:calc(var(--card) / -2);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:1px solid #7d7562;
+  background:rgba(255,255,255,0.25);
+  z-index:1;
+  will-change:transform,opacity;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1),opacity .35s ease,box-shadow .4s ease,border-color .4s ease;
+}
+
+.card.pos-left{transform:translateX(calc(var(--step) * -1)) scale(1)}
+.card.pos-center{transform:translateX(0) scale(1)}
+.card.pos-right{transform:translateX(var(--step)) scale(1)}
+.card.pos-far-left{transform:translateX(calc(var(--step) * -2)) scale(1);opacity:0;z-index:0}
+.card.pos-far-right{transform:translateX(calc(var(--step) * 2)) scale(1);opacity:0;z-index:0}
+
+.card.pos-center.active{
+  transform:translateX(0) scale(1.07);
+  z-index:3;
+  border-color:#b9a24a;
+  box-shadow:0 10px 28px rgba(58,51,38,.2);
+}
+
+.portrait{
+  height:150px;
+  flex:0 0 150px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.portrait svg{height:132px;width:auto}
+
+.card-text{
+  position:relative;
+  flex:1 1 auto;
+  min-height:0;
+  padding:16px 18px 22px;
+  display:flex;
+  flex-direction:column;
+}
+
+.card-text h2{
+  font-size:20px;
+  line-height:1.25;
+  margin:0 0 6px;
+  word-break:break-word;
+}
+
+.goddess{
+  font-size:11px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:#b9a24a;
+  margin:0 0 8px;
+  line-height:1.35;
+}
+
+.tagline{
+  font-style:italic;
+  font-size:13px;
+  line-height:1.4;
+  color:#6f6757;
+  margin:0 0 10px;
+}
+
+.desc{
+  font-size:14px;
+  line-height:1.55;
+  margin:0;
+  color:#5a5344;
+}
+
+.echo{
+  font-style:italic;
+  font-size:14px;
+  line-height:1.5;
+  color:#5a5344;
+  margin-top:14px;
+  padding-right:44px;
+}
+
+.stamp{
+  position:absolute;
+  right:12px;
+  bottom:12px;
+  width:50px;
+  height:58px;
+  opacity:.12;
+  transform:rotate(-6deg);
+  pointer-events:none;
+}
+
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.7);
+  border:1px solid #7d7562;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+  z-index:10;
+  color:#3a3326;
+  touch-action:manipulation;
+}
+.arrow:hover{background:#fff}
+.arrow.left{left:2px}
+.arrow.right{right:2px}
+
+.note{margin-top:54px;font-size:15px;line-height:1.7;color:#5a5344}
+
+@media(max-width:600px){
+  :root{
+    --card:220px;
+    --step:240px;
+    --card-h:640px;
+  }
+  .portrait{height:120px;flex:0 0 120px}
+  .portrait svg{height:106px}
+  .stamp{width:44px;height:52px;right:10px;bottom:10px}
+  .arrow{width:50px;height:50px;font-size:20px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .card{transition:none}
+}
 </style>
 </head>
 <body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="g-body" viewBox="0 0 100 130"><circle cx="50" cy="28" r="13" fill="#efe7d6"/><rect x="46" y="40" width="8" height="10" fill="#efe7d6"/><polygon points="30,50 70,50 80,125 20,125" fill="#efe7d6"/></symbol>
+  <symbol id="g-artemis" viewBox="0 0 100 130"><use href="#g-body"/><path d="M18,28 Q8,62 18,96" fill="none" stroke="#b9a24a" stroke-width="3"/><line x1="12" y1="62" x2="30" y2="62" stroke="#b9a24a" stroke-width="2.5"/></symbol>
+  <symbol id="g-athena" viewBox="0 0 100 130"><use href="#g-body"/><path d="M35,24 Q50,2 65,24" fill="none" stroke="#b9a24a" stroke-width="3"/><polygon points="47,8 50,-2 53,8" fill="#b9a24a"/><circle cx="70" cy="54" r="6" fill="#b9a24a"/><circle cx="68" cy="53" r="1.4" fill="#3a3326"/><circle cx="72" cy="53" r="1.4" fill="#3a3326"/></symbol>
+  <symbol id="g-aphrodite" viewBox="0 0 100 130"><use href="#g-body"/><path d="M50,12 C44,2 32,8 38,18 C42,24 50,30 50,30 C50,30 58,24 62,18 C68,8 56,2 50,12 Z" fill="#d4788a"/></symbol>
+  <symbol id="g-hestia" viewBox="0 0 100 130"><use href="#g-body"/><path d="M50,2 C42,14 40,22 50,28 C60,22 58,14 50,2 Z" fill="#e0a458"/><path d="M50,10 C46,16 46,20 50,24 C54,20 54,16 50,10 Z" fill="#f4d47c"/></symbol>
+  <symbol id="g-demeter" viewBox="0 0 100 130"><use href="#g-body"/><line x1="74" y1="72" x2="74" y2="32" stroke="#b9a24a" stroke-width="2.5"/><ellipse cx="69" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="74" cy="31" rx="3" ry="6" fill="#b9a24a"/></symbol>
+  <symbol id="g-persephone" viewBox="0 0 100 130"><use href="#g-body"/><circle cx="74" cy="60" r="9" fill="#9e2b2b"/><polygon points="69,51 71,46 74,51 77,46 79,51" fill="#7a1f1f"/><circle cx="71" cy="57" r="2" fill="#d4726a"/></symbol>
+  <symbol id="g-hera" viewBox="0 0 100 130"><use href="#g-body"/><polygon points="36,18 40,6 45,14 50,3 55,14 60,6 64,18" fill="#b9a24a"/><circle cx="40" cy="8" r="1.6" fill="#9e2b2b"/><circle cx="50" cy="5" r="1.6" fill="#b9a24a"/><circle cx="60" cy="8" r="1.6" fill="#b9a24a"/></symbol>
+
+  <symbol id="t-mgu" viewBox="0 0 100 130"><rect x="6" y="100" width="88" height="25" fill="#5a5344"/><rect x="38" y="45" width="24" height="80" fill="#5a5344"/><rect x="43" y="32" width="14" height="13" fill="#5a5344"/><rect x="47" y="24" width="6" height="8" fill="#5a5344"/><line x1="50" y1="24" x2="50" y2="8" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="6" r="3.5" fill="#b9a24a"/><circle cx="50" cy="38" r="3" fill="#efe7d6"/><rect x="16" y="72" width="12" height="53" fill="#5a5344"/><rect x="72" y="72" width="12" height="53" fill="#5a5344"/><line x1="22" y1="72" x2="22" y2="60" stroke="#5a5344" stroke-width="2"/><line x1="78" y1="72" x2="78" y2="60" stroke="#5a5344" stroke-width="2"/><circle cx="22" cy="58" r="2.5" fill="#b9a24a"/><circle cx="78" cy="58" r="2.5" fill="#b9a24a"/></symbol>
+  <symbol id="t-mid" viewBox="0 0 100 130"><rect x="8" y="105" width="84" height="20" fill="#5a5344"/><rect x="40" y="40" width="20" height="85" fill="#5a5344"/><rect x="44" y="30" width="12" height="10" fill="#5a5344"/><line x1="50" y1="30" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><circle cx="50" cy="35" r="3.5" fill="#efe7d6"/><rect x="20" y="80" width="10" height="45" fill="#5a5344"/><rect x="70" y="80" width="10" height="45" fill="#5a5344"/><line x1="25" y1="80" x2="25" y2="70" stroke="#5a5344" stroke-width="2"/><line x1="75" y1="80" x2="75" y2="70" stroke="#5a5344" stroke-width="2"/><circle cx="25" cy="68" r="2" fill="#b9a24a"/><circle cx="75" cy="68" r="2" fill="#b9a24a"/></symbol>
+  <symbol id="t-ukraine" viewBox="0 0 100 130"><rect x="6" y="110" width="88" height="15" fill="#5a5344"/><rect x="42" y="35" width="16" height="90" fill="#5a5344"/><line x1="50" y1="35" x2="50" y2="12" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="10" r="3" fill="#b9a24a"/><rect x="8" y="95" width="8" height="30" fill="#5a5344"/><rect x="84" y="95" width="8" height="30" fill="#5a5344"/><line x1="12" y1="95" x2="12" y2="86" stroke="#5a5344" stroke-width="2"/><line x1="88" y1="95" x2="88" y2="86" stroke="#5a5344" stroke-width="2"/><circle cx="12" cy="84" r="2" fill="#b9a24a"/><circle cx="88" cy="84" r="2" fill="#b9a24a"/></symbol>
+  <symbol id="t-barrikadnaya" viewBox="0 0 100 130"><rect x="42" y="100" width="52" height="25" fill="#5a5344"/><rect x="20" y="40" width="22" height="85" fill="#5a5344"/><line x1="31" y1="40" x2="31" y2="18" stroke="#5a5344" stroke-width="2.5"/><circle cx="31" cy="16" r="3" fill="#b9a24a"/><circle cx="31" cy="50" r="3" fill="#efe7d6"/><rect x="84" y="85" width="8" height="40" fill="#5a5344"/><line x1="88" y1="85" x2="88" y2="77" stroke="#5a5344" stroke-width="2"/><circle cx="88" cy="75" r="2" fill="#b9a24a"/></symbol>
+  <symbol id="t-vorota" viewBox="0 0 100 130"><rect x="8" y="108" width="84" height="17" fill="#5a5344"/><rect x="40" y="48" width="20" height="77" fill="#5a5344"/><line x1="50" y1="48" x2="50" y2="26" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="24" r="3" fill="#b9a24a"/><circle cx="50" cy="58" r="5" fill="#efe7d6"/><line x1="50" y1="58" x2="50" y2="54.5" stroke="#5a5344" stroke-width="1.2"/><line x1="50" y1="58" x2="52.5" y2="59" stroke="#5a5344" stroke-width="1.2"/></symbol>
+  <symbol id="t-leningradskaya" viewBox="0 0 100 130"><rect x="4" y="100" width="92" height="25" fill="#5a5344"/><rect x="42" y="42" width="16" height="83" fill="#5a5344"/><line x1="50" y1="42" x2="50" y2="16" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="14" r="3" fill="#b9a24a"/><circle cx="50" cy="52" r="5" fill="#efe7d6"/><line x1="50" y1="52" x2="50" y2="48.5" stroke="#5a5344" stroke-width="1.2"/><line x1="50" y1="52" x2="52.5" y2="53" stroke="#5a5344" stroke-width="1.2"/></symbol>
+  <symbol id="t-kotelnicheskaya" viewBox="0 0 100 130"><rect x="6" y="108" width="88" height="17" fill="#5a5344"/><rect x="40" y="38" width="20" height="87" fill="#5a5344"/><line x1="50" y1="38" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><rect x="18" y="72" width="14" height="53" fill="#5a5344"/><rect x="68" y="72" width="14" height="53" fill="#5a5344"/></symbol>
+</svg>
+
 <div class="wrap">
-<h1>Между нами Москва</h1>
-<p class="sub">семь высоток · семь богинь · один город</p>
-<p class="manifest">Богини не ушли, они переехали. Семь сталинских высоток — семь мест силы греко-римского пантеона. Этот сайт — ещё один слой в городском и психическом ландшафте: для московских богов, заблудившихся в отсутствие Олимпа, и для фантазёров с копьём за пазухой.</p>
-<div class="doors">
-<a class="door" href="prolog.html">
-<h2>Полифоническая история</h2>
-<p>Графический роман: пролог текстом, два эпизода сценой. Один мир в нескольких голосах.</p>
-<span>войти в историю →</span>
-</a>
-<a class="door" href="bogini.html">
-<h2>Семь сестёр</h2>
-<p>Карта мест силы и экскурсия по Москве. Семь высоток, семь богинь, один город между ними.</p>
-<span>листать карусель →</span>
-</a>
-<a class="door" href="listy.html">
-<h2>Авторское</h2>
-<p>Листы, заметки, мета-слой. Что я несу в мир и с кем делюсь.</p>
-<span>скоро →</span>
-</a>
+<a href="index.html" class="back">← на главную</a>
+<h1>Семь сестёр</h1>
+<p class="sub">сталинские высотки · места силы</p>
+
+<div class="stage" id="stage">
+<button type="button" class="arrow left" aria-label="назад">←</button>
+<button type="button" class="arrow right" aria-label="вперёд">→</button>
 </div>
-<footer>inknina · Между нами Москва · сделано руками и кодом</footer>
+
+<p class="note">Усыпальницы, саркофаги? Или места притяжения? Узнаете на нашей экскурсии от лучших гидов столицы. Проведите субботний день с комфортом и пользой, удобные онлайн-автобусы стартуют от платформы «Патриарший мост» каждые полчаса.</p>
 </div>
+
+<script>
+(function(){
+  var GODS=[
+    {h:'МГУ',g:'Артемида / Диана',tag:'Охотница молодых душ.',t:'Университет — это лес, где всё ещё дико и всё ещё растёт. Она ходит между аудиторий с луком на плече и следит, чтобы никто не вырвался в город раньше срока и не уснул к экзамену.',echo:'Строгая. Зато не даёт заблудиться.',gi:'g-artemis',ti:'t-mgu',c:'linear-gradient(135deg,#8b9dc3 0%,#5a6b8a 100%)'},
+    {h:'МИД',g:'Афина / Минерва',tag:'Разум в доспехах.',t:'Пока мужчины в костюмах делят мир на сферы влияния, она сидит напротив и держит сову на протоколе. Справедливая война — это та, что ведётся словами и не оставляет трупов.',echo:'Хранительница города, который они только обсуждают.',gi:'g-athena',ti:'t-mid',c:'linear-gradient(135deg,#a3b89c 0%,#6b7f6b 100%)'},
+    {h:'Гостиница «Украина»',g:'Афродита / Венера',tag:'Зеркало в холле.',t:'Гостиница — её салон. Здесь останавливаются те, кто ищет, и уезжают те, кто нашёл. Она не прячется: она просто не для всех открывается.',echo:'Фрр. Но зеркало помнит каждого.',gi:'g-aphrodite',ti:'t-ukraine',c:'linear-gradient(135deg,#d4a5a5 0%,#b07878 100%)'},
+    {h:'Дом на Баррикадной',g:'Гестия / Веста',tag:'Огонь, который не гасят.',t:'Единственная из семи, чья башня — просто дом. Не дворец, не ведомство, а квартиры, где кто-то ставит чайник, и это тоже лампада. Она не уходит в город — она ждёт, когда вернутся.',echo:'Семейный очаг по последнему слову техники.',gi:'g-hestia',ti:'t-barrikadnaya',c:'linear-gradient(135deg,#c4b896 0%,#8f8468 100%)'},
+    {h:'Здание на Красных воротах',g:'Деметра / Церера и Дисциплина',tag:'Мать, бабушка, сестра и начальник.',t:'Кормушка с порядком — не отпустит, пока не доешь. Дисциплина живёт с ней в одной квартире: голос в сейфе, хлеб по карточкам, любовь через контроль.',echo:'Питает. Контролирует любовью.',gi:'g-demeter',ti:'t-vorota',c:'linear-gradient(135deg,#d4c5a0 0%,#a89876 100%)'},
+    {h:'Гостиница «Ленинградская»',g:'Персефона / Прозерпина',tag:'Та, что держит зерно.',t:'Между матерью и мужем, между весной и подземельем, между чемоданом и ключом. Она выбрала не один мир, а оба — и носит гранат как пропуск, который действует в обе стороны.',echo:'Всегда на пороге. И это не слабость — это её царство.',gi:'g-persephone',ti:'t-leningradskaya',c:'linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)'},
+    {h:'Дом на Котельнической',g:'Гера / Юнона',tag:'Жена, которая видит всё.',t:'Один шпиль — и она видит с него весь город. Не ревнует по мелочам: она ведёт учёт. Интриги и сплетни — это бухгалтерия брака, где она главный бухгалтер.',echo:'Царица. И да, этой ночью она не спала.',gi:'g-hera',ti:'t-kotelnicheskaya',c:'linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)'}
+  ];
+
+  var N=GODS.length;
+  var vi=0;
+  var busy=false;
+  var stage=document.getElementById('stage');
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var DUR=reduce?0:570;
+  var els=[];
+
+  function makeCard(i,posClass,active){
+    var d=GODS[i];
+    var el=document.createElement('div');
+    el.className='card '+posClass+(active?' active':'');
+    el.innerHTML=
+      '<div class="portrait" style="background:'+d.c+'"><svg><use href="#'+d.gi+'"/></svg></div>'+
+      '<div class="card-text">'+
+        '<h2>'+d.h+'</h2>'+
+        '<p class="goddess">'+d.g+'</p>'+
+        '<p class="tagline">'+d.tag+'</p>'+
+        '<p class="desc">'+d.t+'</p>'+
+        '<p class="echo">'+d.echo+'</p>'+
+        '<svg class="stamp"><use href="#'+d.ti+'"/></svg>'+
+      '</div>';
+    return el;
+  }
+
+  function clearCards(){
+    for(var i=0;i<els.length;i++){
+      if(els[i] && els[i].parentNode){
+        els[i].parentNode.removeChild(els[i]);
+      }
+    }
+    els=[];
+  }
+
+  function init(){
+    clearCards();
+    els=[
+      makeCard((vi-1+N)%N,'pos-left',false),
+      makeCard(vi,'pos-center',true),
+      makeCard((vi+1)%N,'pos-right',false)
+    ];
+    for(var i=0;i<els.length;i++){
+      stage.appendChild(els[i]);
+    }
+  }
+
+  function setPos(el,posClass,active){
+    el.classList.remove('pos-left','pos-center','pos-right','pos-far-left','pos-far-right','active');
+    el.classList.add(posClass);
+    if(active){
+      el.classList.add('active');
+    }
+  }
+
+  function go(delta){
+    if(busy)return;
+
+    if(reduce){
+      vi=(vi+delta+N)%N;
+      init();
+      return;
+    }
+
+    busy=true;
+
+    var oldL=els[0];
+    var oldC=els[1];
+    var oldR=els[2];
+    var newEl;
+
+    if(delta>0){
+      newEl=makeCard((vi+2)%N,'pos-far-right',false);
+      stage.appendChild(newEl);
+      void newEl.offsetWidth;
+
+      setPos(oldL,'pos-far-left',false);
+      setPos(oldC,'pos-left',false);
+      setPos(oldR,'pos-center',true);
+      setPos(newEl,'pos-right',false);
+
+      vi=(vi+1)%N;
+      els=[oldC,oldR,newEl];
+
+      window.setTimeout(function(){
+        if(oldL && oldL.parentNode){
+          oldL.parentNode.removeChild(oldL);
+        }
+        busy=false;
+      },DUR+80);
+    }else{
+      newEl=makeCard((vi-2+N)%N,'pos-far-left',false);
+      stage.appendChild(newEl);
+      void newEl.offsetWidth;
+
+      setPos(oldR,'pos-far-right',false);
+      setPos(oldC,'pos-right',false);
+      setPos(oldL,'pos-center',true);
+      setPos(newEl,'pos-left',false);
+
+      vi=(vi-1+N)%N;
+      els=[newEl,oldL,oldC];
+
+      window.setTimeout(function(){
+        if(oldR && oldR.parentNode){
+          oldR.parentNode.removeChild(oldR);
+        }
+        busy=false;
+      },DUR+80);
+    }
+  }
+
+  init();
+
+  stage.querySelector('.arrow.right').addEventListener('click',function(){
+    go(1);
+  });
+
+  stage.querySelector('.arrow.left').addEventListener('click',function(){
+    go(-1);
+  });
+
+  window.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+})();
+</script>
 </body>
 </html>
