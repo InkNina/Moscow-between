@@ -100,10 +100,11 @@ h1{
 .map{
   position:absolute;
   inset:var(--map-inset);
-  width:auto;
-  height:auto;
-  object-fit:cover;
-  object-position:center center;
+
+  background-image:url('michurin.jpg');
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
 
   opacity:var(--map-opacity);
   mix-blend-mode:var(--map-blend);
@@ -136,7 +137,7 @@ h1{
   <p class="sub">стена · карта · коллаж</p>
 
   <div class="wall" aria-label="Стена с Мичуринским планом Москвы">
-    <img class="map" src="michurin.jpg" alt="Мичуринский план Москвы" decoding="async">
+    <div class="map" role="img" aria-label="Мичуринский план Москвы"></div>
   </div>
 
   <p class="note">
