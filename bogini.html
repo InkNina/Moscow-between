@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Семь сестёр · Москва между</title>
 <style>
+*,*::before,*::after{box-sizing:border-box}
+:root{--card:260px;--gap:20px}
 html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
 .wrap{max-width:960px;margin:0 auto;padding:48px 20px 80px}
 h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
@@ -12,16 +14,30 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .back{display:inline-block;margin-bottom:24px;color:#7d7562;text-decoration:none;font-size:14px;letter-spacing:1px;border-bottom:1px solid #b9a24a}
 .back:hover{color:#3a3326}
 
-.stage{position:relative;overflow:hidden;padding:14px 0}
+.stage{position:relative;overflow:hidden;padding:14px 0;user-select:none}
 .track{display:flex;width:max-content;will-change:transform;transition:transform .55s cubic-bezier(.22,.61,.36,1)}
 .set{display:flex}
-.set .card{margin-right:20px}
+.set .card{margin-right:var(--gap)}
 .set .card:last-child{margin-right:0}
-.track .set{margin-right:20px}
+.track .set{margin-right:var(--gap)}
 .track .set:last-child{margin-right:0}
 
-.card{flex:0 0 260px;display:flex;flex-direction:column;border:1px solid #7d7562;background:rgba(255,255,255,0.25);position:relative;transition:transform .45s cubic-bezier(.22,.61,.36,1),box-shadow .45s ease,border-color .45s ease}
-.card.active{transform:scale(1.07);z-index:2;box-shadow:0 10px 28px rgba(58,51,38,.2);border-color:#b9a24a}
+.card{
+  flex:0 0 var(--card);
+  display:flex;
+  flex-direction:column;
+  border:1px solid #7d7562;
+  background:rgba(255,255,255,0.25);
+  position:relative;
+  transition:transform .45s cubic-bezier(.22,.61,.36,1),box-shadow .45s ease,border-color .45s ease;
+}
+.card.active{
+  transform:scale(1.07);
+  z-index:2;
+  box-shadow:0 10px 28px rgba(58,51,38,.2);
+  border-color:#b9a24a;
+}
+
 .portrait{height:158px;display:flex;align-items:center;justify-content:center}
 .portrait svg{height:138px;width:auto}
 .card-text{padding:16px 18px 18px;flex:1}
@@ -31,13 +47,37 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .tower{height:112px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(180deg,#d9d2bf 0%,#b3a98d 100%);border-top:1px solid #7d7562}
 .tower svg{height:98px;width:auto}
 
-.arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.7);border:1px solid #7d7562;width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;z-index:10;color:#3a3326}
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.7);
+  border:1px solid #7d7562;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+  z-index:10;
+  color:#3a3326;
+  touch-action:manipulation;
+}
 .arrow:hover{background:#fff}
 .arrow.left{left:6px}
 .arrow.right{right:6px}
 
 .note{margin-top:54px;font-size:15px;line-height:1.7;color:#5a5344}
-@media(max-width:600px){.card{flex:0 0 220px}.arrow{width:52px;height:52px;font-size:20px}}
+
+@media(max-width:600px){
+  :root{--card:220px}
+  .arrow{width:52px;height:52px;font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  .track{transition:none}
+  .card{transition:none}
+}
 </style>
 </head>
 <body>
@@ -166,7 +206,8 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 <p class="sub">сталинские высотки · места силы</p>
 
 <div class="stage">
-<button class="arrow left" aria-label="назад">←</button>
+<button type="button" class="arrow left" aria-label="назад">←</button>
+
 <div class="track" id="track">
   <div class="set">
 
@@ -235,129 +276,160 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 
   </div>
 </div>
-<button class="arrow right" aria-label="вперёд">→</button>
+
+<button type="button" class="arrow right" aria-label="вперёд">→</button>
 </div>
 
 <p class="note">Усыпальницы, саркофаги? Или места притяжения? Узнаете на нашей экскурсии от лучших гидов столицы. Проведите субботний день с комфортом и пользой, удобные онлайн-автобусы стартуют от платформы «Патриарший мост» каждые полчаса.</p>
 </div>
 
 <script>
-<script>
-var track=document.getElementById('track');
-var stage=document.querySelector('.stage');
-var set0=track.querySelector('.set');
+(function(){
+  var track=document.getElementById('track');
+  if(!track)return;
 
-track.appendChild(set0.cloneNode(true));
-track.appendChild(set0.cloneNode(true));
+  var stage=document.querySelector('.stage') || track.parentNode;
+  var set0=track.querySelector('.set');
+  if(!set0)return;
 
-var cards=[].slice.call(track.querySelectorAll('.card'));
-var N=7;
-var vi=0;
-var busy=false;
+  track.appendChild(set0.cloneNode(true));
+  track.appendChild(set0.cloneNode(true));
 
-var cardW=260;
-var cardStep=280;
-var setOffset=1960;
+  var cards=[].slice.call(track.querySelectorAll('.card'));
+  var N=7;
+  var vi=0;
+  var busy=false;
+  var DURATION=560;
+  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-function measure(){
-  if(!cards.length)return;
-
-  cardW=cards[0].offsetWidth||cardW;
-
-  if(cards.length>1){
-    var step=cards[1].offsetLeft-cards[0].offsetLeft;
-    if(step>10)cardStep=step;
+  function num(cssVar, fallback){
+    var v=getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+    var n=parseFloat(v);
+    return isFinite(n)?n:fallback;
   }
 
-  if(cards.length>N){
-    var off=cards[N].offsetLeft-cards[0].offsetLeft;
-    if(off>10)setOffset=off;
-  }
-}
-
-function centerOff(){
-  return (stage.clientWidth-cardW)/2;
-}
-
-function posFor(i){
-  return centerOff()-(setOffset+i*cardStep);
-}
-
-function setActive(i){
-  for(var k=0;k<cards.length;k++){
-    cards[k].classList.toggle('active',k===i+N);
-  }
-}
-
-function render(animate){
-  var p=posFor(vi);
-
-  if(!animate||reduce){
-    track.style.transition='none';
+  function cardW(){
+    var w=cards.length ? cards[0].offsetWidth : 0;
+    if(!w || !isFinite(w)) w=num('--card',260);
+    return w;
   }
 
-  track.style.transform='translate3d('+p+'px,0,0)';
-
-  if(!animate||reduce){
-    void track.offsetHeight;
-    track.style.transition='';
+  function gap(){
+    return num('--gap',20);
   }
 
-  setActive(vi);
-}
+  function step(){
+    return cardW()+gap();
+  }
 
-function go(d){
-  if(busy)return;
+  function setShift(){
+    return N*step();
+  }
 
-  vi+=d;
-  busy=true;
-  render(true);
+  function stageW(){
+    return stage.clientWidth || window.innerWidth || 320;
+  }
 
-  setTimeout(function(){
-    if(vi<0||vi>=N){
-      vi=((vi%N)+N)%N;
-      render(false);
+  function centerOffset(){
+    return (stageW()-cardW())/2;
+  }
+
+  function posFor(i){
+    return centerOffset() - (setShift() + i*step());
+  }
+
+  function setActiveGlobal(g){
+    for(var k=0;k<cards.length;k++){
+      cards[k].classList.toggle('active', k===g);
     }
-    busy=false;
-  },(reduce?0:560)+40);
-}
+  }
 
-function boot(){
-  measure();
-  render(false);
+  function render(animate){
+    if(!cards.length)return;
 
-  requestAnimationFrame(function(){
-    measure();
+    var p=posFor(vi);
+    if(!isFinite(p)) p=0;
+
+    if(!animate || reduce){
+      track.style.transition='none';
+    }
+
+    track.style.transform='translate3d('+p+'px,0,0)';
+
+    if(!animate || reduce){
+      void track.offsetWidth;
+      track.style.transition='';
+    }
+
+    setActiveGlobal(N+vi);
+  }
+
+  function normalize(){
+    if(vi<0) vi += N;
+    else if(vi>=N) vi -= N;
+  }
+
+  function go(d){
+    if(busy)return;
+
+    vi += d;
+    busy=true;
+
+    try{
+      render(true);
+    }catch(e){
+      busy=false;
+      try{
+        normalize();
+        render(false);
+      }catch(e2){}
+      return;
+    }
+
+    window.setTimeout(function(){
+      try{
+        normalize();
+        render(false);
+      }finally{
+        busy=false;
+      }
+    }, (reduce?0:DURATION)+50);
+  }
+
+  function boot(){
+    render(false);
+    requestAnimationFrame(function(){
+      render(false);
+    });
+  }
+
+  boot();
+
+  window.addEventListener('load', boot);
+  window.addEventListener('resize', function(){
     render(false);
   });
-}
 
-boot();
+  var right=stage.querySelector('.arrow.right');
+  var left=stage.querySelector('.arrow.left');
 
-window.addEventListener('load',boot);
-window.addEventListener('resize',function(){
-  measure();
-  render(false);
-});
-window.addEventListener('orientationchange',function(){
-  setTimeout(boot,250);
-});
+  if(right){
+    right.addEventListener('click', function(){
+      go(1);
+    });
+  }
 
-document.querySelector('.arrow.right').addEventListener('click',function(){
-  go(1);
-});
+  if(left){
+    left.addEventListener('click', function(){
+      go(-1);
+    });
+  }
 
-document.querySelector('.arrow.left').addEventListener('click',function(){
-  go(-1);
-});
-
-window.addEventListener('keydown',function(e){
-  if(e.key==='ArrowRight')go(1);
-  if(e.key==='ArrowLeft')go(-1);
-});
-</script>
+  window.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+})();
 </script>
 </body>
 </html>
