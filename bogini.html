@@ -15,16 +15,9 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 .back:hover{color:#3a3326}
 
 .stage{position:relative;overflow:hidden;padding:30px 0}
-.track{display:flex;width:max-content;will-change:transform;transition:transform .5s cubic-bezier(.22,.61,.36,1);user-select:none}
-.set{display:flex;flex:0 0 auto}
-
-.card{
-  flex:0 0 var(--card);margin-right:var(--gap);
-  display:flex;flex-direction:column;
-  border:1px solid #7d7562;background:rgba(255,255,255,0.25);
-  transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s ease,border-color .4s ease;
-}
-.card.active{transform:scale(1.07);z-index:2;box-shadow:0 10px 28px rgba(58,51,38,.2);border-color:#b9a24a}
+.slots{display:flex;justify-content:center;gap:var(--gap)}
+.slot{flex:0 0 var(--card);display:flex;flex-direction:column;border:1px solid #7d7562;background:rgba(255,255,255,0.25);transition:transform .4s cubic-bezier(.22,.61,.36,1),box-shadow .4s ease,border-color .4s ease}
+.slot.active{transform:scale(1.07);z-index:2;box-shadow:0 10px 28px rgba(58,51,38,.2);border-color:#b9a24a}
 
 .portrait{height:158px;display:flex;align-items:center;justify-content:center}
 .portrait svg{height:138px;width:auto}
@@ -42,7 +35,7 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 
 .note{margin-top:54px;font-size:15px;line-height:1.7;color:#5a5344}
 @media(max-width:600px){:root{--card:220px}.arrow{width:50px;height:50px;font-size:20px}}
-@media(prefers-reduced-motion:reduce){.track{transition:none}.card{transition:none}}
+@media(prefers-reduced-motion:reduce){.slot{transition:none}}
 </style>
 </head>
 <body>
@@ -56,7 +49,6 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
   <symbol id="g-demeter" viewBox="0 0 100 130"><use href="#g-body"/><line x1="74" y1="72" x2="74" y2="32" stroke="#b9a24a" stroke-width="2.5"/><ellipse cx="69" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="40" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="50" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="69" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="79" cy="60" rx="3" ry="5.5" fill="#b9a24a"/><ellipse cx="74" cy="31" rx="3" ry="6" fill="#b9a24a"/></symbol>
   <symbol id="g-persephone" viewBox="0 0 100 130"><use href="#g-body"/><circle cx="74" cy="60" r="9" fill="#9e2b2b"/><polygon points="69,51 71,46 74,51 77,46 79,51" fill="#7a1f1f"/><circle cx="71" cy="57" r="2" fill="#d4726a"/></symbol>
   <symbol id="g-hera" viewBox="0 0 100 130"><use href="#g-body"/><polygon points="36,18 40,6 45,14 50,3 55,14 60,6 64,18" fill="#b9a24a"/><circle cx="40" cy="8" r="1.6" fill="#9e2b2b"/><circle cx="50" cy="5" r="1.6" fill="#b9a24a"/><circle cx="60" cy="8" r="1.6" fill="#b9a24a"/></symbol>
-
   <symbol id="t-mgu" viewBox="0 0 100 130"><rect x="6" y="100" width="88" height="25" fill="#5a5344"/><rect x="38" y="45" width="24" height="80" fill="#5a5344"/><rect x="43" y="32" width="14" height="13" fill="#5a5344"/><rect x="47" y="24" width="6" height="8" fill="#5a5344"/><line x1="50" y1="24" x2="50" y2="8" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="6" r="3.5" fill="#b9a24a"/><circle cx="50" cy="38" r="3" fill="#efe7d6"/><rect x="16" y="72" width="12" height="53" fill="#5a5344"/><rect x="72" y="72" width="12" height="53" fill="#5a5344"/><line x1="22" y1="72" x2="22" y2="60" stroke="#5a5344" stroke-width="2"/><line x1="78" y1="72" x2="78" y2="60" stroke="#5a5344" stroke-width="2"/><circle cx="22" cy="58" r="2.5" fill="#b9a24a"/><circle cx="78" cy="58" r="2.5" fill="#b9a24a"/></symbol>
   <symbol id="t-mid" viewBox="0 0 100 130"><rect x="8" y="105" width="84" height="20" fill="#5a5344"/><rect x="40" y="40" width="20" height="85" fill="#5a5344"/><rect x="44" y="30" width="12" height="10" fill="#5a5344"/><line x1="50" y1="30" x2="50" y2="10" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="8" r="3" fill="#b9a24a"/><circle cx="50" cy="35" r="3.5" fill="#efe7d6"/><rect x="20" y="80" width="10" height="45" fill="#5a5344"/><rect x="70" y="80" width="10" height="45" fill="#5a5344"/><line x1="25" y1="80" x2="25" y2="70" stroke="#5a5344" stroke-width="2"/><line x1="75" y1="80" x2="75" y2="70" stroke="#5a5344" stroke-width="2"/><circle cx="25" cy="68" r="2" fill="#b9a24a"/><circle cx="75" cy="68" r="2" fill="#b9a24a"/></symbol>
   <symbol id="t-ukraine" viewBox="0 0 100 130"><rect x="6" y="110" width="88" height="15" fill="#5a5344"/><rect x="42" y="35" width="16" height="90" fill="#5a5344"/><line x1="50" y1="35" x2="50" y2="12" stroke="#5a5344" stroke-width="2.5"/><circle cx="50" cy="10" r="3" fill="#b9a24a"/><rect x="8" y="95" width="8" height="30" fill="#5a5344"/><rect x="84" y="95" width="8" height="30" fill="#5a5344"/><line x1="12" y1="95" x2="12" y2="86" stroke="#5a5344" stroke-width="2"/><line x1="88" y1="95" x2="88" y2="86" stroke="#5a5344" stroke-width="2"/><circle cx="12" cy="84" r="2" fill="#b9a24a"/><circle cx="88" cy="84" r="2" fill="#b9a24a"/></symbol>
@@ -73,16 +65,10 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 
 <div class="stage">
 <button type="button" class="arrow left" aria-label="назад">←</button>
-<div class="track" id="track">
-  <div class="set" id="set0">
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#8b9dc3 0%,#5a6b8a 100%)"><svg><use href="#g-artemis"/></svg></div><div class="card-text"><h2>МГУ</h2><p class="goddess">Артемида / Диана</p><p>Университет, учеба, молодежь, студенты, сообщество, рост. Место силы охотницы, хранительницы диких мест и молодых душ.</p></div><div class="tower"><svg><use href="#t-mgu"/></svg></div></div>
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#a3b89c 0%,#6b7f6b 100%)"><svg><use href="#g-athena"/></svg></div><div class="card-text"><h2>МИД</h2><p class="goddess">Афина / Минерва</p><p>Работа с мужчинами-героями по вопросам урегулирования международных отношений. Богиня мудрости и справедливой войны, хранительница города.</p></div><div class="tower"><svg><use href="#t-mid"/></svg></div></div>
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#d4a5a5 0%,#b07878 100%)"><svg><use href="#g-aphrodite"/></svg></div><div class="card-text"><h2>Гостиница «Украина»</h2><p class="goddess">Афродита / Венера</p><p>Место встречи с обольстительной богиней любви и красоты. Там, где страсть встречается с дипломатией.</p></div><div class="tower"><svg><use href="#t-ukraine"/></svg></div></div>
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#c4b896 0%,#8f8468 100%)"><svg><use href="#g-hestia"/></svg></div><div class="card-text"><h2>Дом на Баррикадной</h2><p class="goddess">Гестия / Веста</p><p>Семейный очаг по последнему слову техники. Хранительница домашнего огня, богиня, которая не покидает дом.</p></div><div class="tower"><svg><use href="#t-barrikadnaya"/></svg></div></div>
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#d4c5a0 0%,#a89876 100%)"><svg><use href="#g-demeter"/></svg></div><div class="card-text"><h2>Здание на Красных воротах</h2><p class="goddess">Деметра / Церера и Дисциплина</p><p>Чудо инженерного решения. Богиня плодородия и Дисциплина — порядок в хаосе роста, материнство и контроль в одном фасаде.</p></div><div class="tower"><svg><use href="#t-vorota"/></svg></div></div>
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)"><svg><use href="#g-persephone"/></svg></div><div class="card-text"><h2>Гостиница «Ленинградская»</h2><p class="goddess">Персефона / Прозерпина</p><p>Всегда рядом с матерью. Та, кто знает два мира и ходит между ними, держа в руке гранат.</p></div><div class="tower"><svg><use href="#t-leningradskaya"/></svg></div></div>
-    <div class="card"><div class="portrait" style="background:linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)"><svg><use href="#g-hera"/></svg></div><div class="card-text"><h2>Дом на Котельнической</h2><p class="goddess">Гера / Юнона</p><p>Власть, интриги, сплетни. Царица богов, хранительница брака и ревнивая жена — под тремя шпилями.</p></div><div class="tower"><svg><use href="#t-kotelnicheskaya"/></svg></div></div>
-  </div>
+<div class="slots">
+  <div class="slot" id="slotL"></div>
+  <div class="slot active" id="slotM"></div>
+  <div class="slot" id="slotR"></div>
 </div>
 <button type="button" class="arrow right" aria-label="вперёд">→</button>
 </div>
@@ -92,80 +78,36 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 
 <script>
 (function(){
-  var track=document.getElementById('track');
-  var set0=document.getElementById('set0');
-  var stage=track.parentNode;
-  if(!track||!set0)return;
+  var GODS=[
+    {h:'МГУ',g:'Артемида / Диана',t:'Университет, учеба, молодежь, студенты, сообщество, рост. Место силы охотницы, хранительницы диких мест и молодых душ.',gi:'g-artemis',ti:'t-mgu',c:'linear-gradient(135deg,#8b9dc3 0%,#5a6b8a 100%)'},
+    {h:'МИД',g:'Афина / Минерва',t:'Работа с мужчинами-героями по вопросам урегулирования международных отношений. Богиня мудрости и справедливой войны, хранительница города.',gi:'g-athena',ti:'t-mid',c:'linear-gradient(135deg,#a3b89c 0%,#6b7f6b 100%)'},
+    {h:'Гостиница «Украина»',g:'Афродита / Венера',t:'Место встречи с обольстительной богиней любви и красоты. Там, где страсть встречается с дипломатией.',gi:'g-aphrodite',ti:'t-ukraine',c:'linear-gradient(135deg,#d4a5a5 0%,#b07878 100%)'},
+    {h:'Дом на Баррикадной',g:'Гестия / Веста',t:'Семейный очаг по последнему слову техники. Хранительница домашнего огня, богиня, которая не покидает дом.',gi:'g-hestia',ti:'t-barrikadnaya',c:'linear-gradient(135deg,#c4b896 0%,#8f8468 100%)'},
+    {h:'Здание на Красных воротах',g:'Деметра / Церера и Дисциплина',t:'Чудо инженерного решения. Богиня плодородия и Дисциплина — порядок в хаосе роста, материнство и контроль в одном фасаде.',gi:'g-demeter',ti:'t-vorota',c:'linear-gradient(135deg,#d4c5a0 0%,#a89876 100%)'},
+    {h:'Гостиница «Ленинградская»',g:'Персефона / Прозерпина',t:'Всегда рядом с матерью. Та, кто знает два мира и ходит между ними, держа в руке гранат.',gi:'g-persephone',ti:'t-leningradskaya',c:'linear-gradient(135deg,#b8a5c4 0%,#7f6b8a 100%)'},
+    {h:'Дом на Котельнической',g:'Гера / Юнона',t:'Власть, интриги, сплетни. Царица богов, хранительница брака и ревнивая жена — под тремя шпилями.',gi:'g-hera',ti:'t-kotelnicheskaya',c:'linear-gradient(135deg,#c9a89c 0%,#8f6b5e 100%)'}
+  ];
+  var N=GODS.length, vi=0;
+  var sL=document.getElementById('slotL'), sM=document.getElementById('slotM'), sR=document.getElementById('slotR');
+  var stage=document.querySelector('.stage');
 
-  var lc=set0.cloneNode(true); lc.removeAttribute('id');
-  var rc=set0.cloneNode(true); rc.removeAttribute('id');
-  track.insertBefore(lc,set0);
-  track.appendChild(rc);
+  function card(i){
+    var d=GODS[i];
+    return '<div class="portrait" style="background:'+d.c+'"><svg><use href="#'+d.gi+'"/></svg></div>'+
+           '<div class="card-text"><h2>'+d.h+'</h2><p class="goddess">'+d.g+'</p><p>'+d.t+'</p></div>'+
+           '<div class="tower"><svg><use href="#'+d.ti+'"/></svg></div>';
+  }
+  function draw(){
+    sL.innerHTML=card((vi+N-1)%N);
+    sM.innerHTML=card(vi);
+    sR.innerHTML=card((vi+1)%N);
+  }
+  function go(d){ vi=(vi+d+N)%N; draw(); }
 
-  var cards=[].slice.call(track.querySelectorAll('.card'));
-  var N=7, MID=N;
-  var vi=0, busy=false, ready=false;
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var DUR=reduce?0:500;
-
-  function cardW(){
-    var w=cards[MID].offsetWidth;            // offsetWidth игнорирует scale — не врёт на активной карте
-    if(!w||!isFinite(w)){var v=getComputedStyle(document.documentElement).getPropertyValue('--card').trim();w=parseFloat(v)||260;}
-    return w;
-  }
-  function gap(){
-    var v=getComputedStyle(document.documentElement).getPropertyValue('--gap').trim();
-    var n=parseFloat(v);
-    return isFinite(n)&&n>=0?n:20;
-  }
-  function step(){return cardW()+gap();}
-  function setShift(){return N*step();}
-  function center(){
-    var c=stage.clientWidth;                  // единственное рантайм-измерение, и оно под охраной: 0 = невалидно
-    return (c&&c>0)?c:null;
-  }
-
-  function apply(p,animate){
-    if(animate&&!reduce){/* transition в CSS */}
-    else{track.style.transition='none';}
-    track.style.transform='translateX('+p+'px)';
-    if(!animate||reduce){void track.offsetWidth;track.style.transition='';}
-  }
-  function mark(){for(var k=0;k<cards.length;k++)cards[k].classList.toggle('active',k===MID+vi);}
-
-  function render(animate){
-    var c=center();
-    if(c===null)return false;                 // ширина ещё не готова — просим пересчёт, не верим нулю
-    apply(c/2 - cardW()/2 - (setShift() + vi*step()), animate);
-    mark();
-    return true;
-  }
-
-  function settle(){
-    busy=false;
-    if(vi<0||vi>=N){vi=((vi%N)+N)%N;render(false);}
-  }
-  function go(d){
-    if(!ready||busy)return;
-    busy=true; vi+=d;
-    if(!render(true)){setTimeout(function(){render(true);},16);}   // страховка на случай ресайза в момент шага
-    setTimeout(settle,DUR+40);
-  }
-
-  // старт: крутим rAF, пока ширина сцены не станет положительным числом
-  var tries=0;
-  function init(){
-    if(render(false)){ready=true;return;}
-    if(++tries<40){requestAnimationFrame(init);}
-    else{ready=true;render(false);}           // после 0.6с разблокируем в любом случае — лучше краешек, чем вечный цикл
-  }
-  init();
-  window.addEventListener('load',function(){tries=0;init();});   // повтор на случай шрифтов/позднего layout
-
+  draw();
   stage.querySelector('.arrow.right').addEventListener('click',function(){go(1);});
   stage.querySelector('.arrow.left').addEventListener('click',function(){go(-1);});
   window.addEventListener('keydown',function(e){if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
-  window.addEventListener('resize',function(){if(ready)render(false);});
 })();
 </script>
 </body>
