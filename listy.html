@@ -20,11 +20,13 @@
   --muted:#7d7562;
   --gold:#b9a24a;
 
-  /* Карта на стене. Стена = весь экран, полей нет. */
-  --map-scale:1.02;     /* >1 = края уходят за браузер, там секрет */
-  --map-rot:0deg;       /* до 1deg, не больше */
+  --zoom:1.02;
+  --zoom-min:1;
+  --zoom-max:2.6;
+  --zoom-step:0.15;
+
   --map-opacity:.97;
-  --map-blend:multiply; /* multiply = карта впитывается в бумагу; normal = плоская */
+  --map-blend:multiply;
 }
 
 html,body{
@@ -34,7 +36,7 @@ html,body{
   font-family:Georgia,serif;
 }
 
-/* Стена фиксирована. Несущая. = окно браузера целиком. */
+/* Стена фиксирована. Это окно/рамка, она не зумится. */
 .wall{
   position:relative;
   isolation:isolate;
@@ -43,29 +45,44 @@ html,body{
   width:100vw;
   height:100vh;
   height:100svh;
+
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.42), transparent 58%),
+    linear-gradient(180deg, #e4dcc9 0%, #d5cab4 100%);
+}
+
+/* Поверхность внутри стены. Карта и будущие листы живут здесь. */
+.surface{
+  position:absolute;
+  inset:0;
+  z-index:1;
+
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.42), transparent 58%),
+    linear-gradient(180deg, #e4dcc9 0%, #d5cab4 100%);
+
+  transform:scale(var(--zoom));
+  transform-origin:center center;
+  will-change:transform;
 }
 
 .map{
   position:absolute;
   inset:0;
-  z-index:1;
 
   background-image:url('michurin.jpg');
-  background-size:100% auto;     /* по ширине экрана; низ уходит за край = обрезка */
-    background-position:center center;/* центр карты = центр стены, края обрезаются со всех сторон */
+  background-size:100% auto;
+  background-position:center center;
   background-repeat:no-repeat;
 
   opacity:var(--map-opacity);
   mix-blend-mode:var(--map-blend);
-
-  transform:scale(var(--map-scale)) rotate(var(--map-rot));
-  transform-origin:center center;
 }
 
-/* Титр галереи лежит прямо на городе, справа сверху, чтобы не давить на картуш. */
+/* Титр не зумится: он интерфейс стены, а не часть карты. */
 .plate{
   position:absolute;
-  z-index:2;
+  z-index:3;
   top:clamp(16px,3vh,34px);
   right:clamp(16px,3vw,40px);
   max-width:min(46vw,520px);
@@ -85,7 +102,10 @@ html,body{
   letter-spacing:1px;
   border-bottom:1px solid var(--gold);
 }
-.back:hover{color:var(--ink)}
+
+.back:hover{
+  color:var(--ink);
+}
 
 .plate h1{
   font-size:clamp(26px,3.4vw,46px);
@@ -102,23 +122,131 @@ html,body{
   margin:0;
 }
 
-/* Узкий экран: карта заполняет целиком ценой картуша. Телефонный режим пересоберём отдельно. */
+/* Зум-панель */
+.zoom{
+  position:absolute;
+  z-index:4;
+  right:clamp(12px,2vw,24px);
+  bottom:clamp(12px,2vh,24px);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.zoom button{
+  height:42px;
+  min-width:42px;
+  padding:0 10px;
+  border:1px solid rgba(58,51,38,.35);
+  background:rgba(233,225,210,.78);
+  color:var(--ink);
+  font-family:Georgia,serif;
+  font-size:18px;
+  line-height:1;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.zoom button:hover{
+  background:rgba(233,225,210,.96);
+}
+
+.zoom .reset{
+  font-size:12px;
+  letter-spacing:1px;
+}
+
+.zoom .value{
+  min-width:54px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:1px;
+  text-shadow:
+    0 0 10px rgba(233,225,210,.95),
+    0 0 3px rgba(233,225,210,.9);
+}
+
 @media(max-width:700px){
-  .map{background-size:cover;background-position:center}
-  .plate{left:clamp(14px,4vw,24px);right:clamp(14px,4vw,24px);max-width:none;text-align:left}
+  .map{
+    background-size:cover;
+    background-position:center center;
+  }
+
+  .plate{
+    left:clamp(14px,4vw,24px);
+    right:clamp(14px,4vw,24px);
+    max-width:none;
+    text-align:left;
+  }
+
+  .zoom{
+    left:clamp(12px,4vw,24px);
+    right:auto;
+  }
 }
 </style>
 </head>
 <body>
 
 <div class="wall" aria-label="Стена с Мичуринским планом Москвы">
-  <div class="map" role="img" aria-label="Мичуринский план Москвы"></div>
+  <div class="surface" id="surface">
+    <div class="map" role="img" aria-label="Мичуринский план Москвы"></div>
+    <!-- Сюда позже сядут листы: <div class="sheet" ...></div> -->
+  </div>
+
   <div class="plate">
     <a class="back" href="index.html">← на главную</a>
     <h1>Авторские листы</h1>
     <p class="sub">стена · карта · коллаж</p>
   </div>
+
+  <div class="zoom" aria-label="Масштаб стены">
+    <button id="zoomOut" type="button" aria-label="Отдалить">−</button>
+    <span class="value" id="zoomValue">102%</span>
+    <button id="zoomReset" class="reset" type="button" aria-label="Сбросить масштаб">1:1</button>
+    <button id="zoomIn" type="button" aria-label="Приблизить">+</button>
+  </div>
 </div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var value=document.getElementById('zoomValue');
+  var btnIn=document.getElementById('zoomIn');
+  var btnOut=document.getElementById('zoomOut');
+  var btnReset=document.getElementById('zoomReset');
+
+  var styles=getComputedStyle(root);
+  var min=parseFloat(styles.getPropertyValue('--zoom-min'))||1;
+  var max=parseFloat(styles.getPropertyValue('--zoom-max'))||2.6;
+  var step=parseFloat(styles.getPropertyValue('--zoom-step'))||0.15;
+  var start=parseFloat(styles.getPropertyValue('--zoom'))||1.02;
+  var z=start;
+
+  function render(){
+    root.style.setProperty('--zoom', z.toFixed(3));
+    if(value) value.textContent=Math.round(z*100)+'%';
+  }
+
+  function set(next){
+    z=Math.min(max, Math.max(min, next));
+    render();
+  }
+
+  if(btnIn) btnIn.addEventListener('click', function(){ set(z+step); });
+  if(btnOut) btnOut.addEventListener('click', function(){ set(z-step); });
+  if(btnReset) btnReset.addEventListener('click', function(){ set(start); });
+
+  window.addEventListener('keydown', function(e){
+    if(e.key==='+' || e.key==='=') set(z+step);
+    if(e.key==='-' || e.key==='_') set(z-step);
+    if(e.key==='0') set(start);
+  });
+
+  render();
+})();
+</script>
 
 </body>
 </html>
