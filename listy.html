@@ -79,6 +79,31 @@ html,body{
   mix-blend-mode:var(--map-blend);
 }
 
+.sheet{
+  position:absolute;
+  left:var(--sheet-x,50%);
+  top:var(--sheet-y,50%);
+  width:var(--sheet-w,30%);
+  transform:translate(-50%,-50%) rotate(var(--sheet-rot,0deg));
+  transform-origin:center center;
+  z-index:2;
+}
+
+.sheet img{
+  display:block;
+  width:100%;
+  height:auto;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.55),
+    0 12px 28px rgba(58,51,38,.18);
+}
+
+.sheet.vellum img{
+  opacity:var(--sheet-op,.78);
+  mix-blend-mode:var(--sheet-blend,multiply);
+  box-shadow:none;
+}
+
 /* Титр не зумится: он интерфейс стены, а не часть карты. */
 .plate{
   position:absolute;
