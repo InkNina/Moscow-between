@@ -51,7 +51,7 @@ html,body{
     linear-gradient(180deg, #e4dcc9 0%, #d5cab4 100%);
 }
 
-/* Поверхность внутри стены. Карта и будущие листы живут здесь. */
+/* Поверхность внутри стены. Карта и листы живут здесь. */
 .surface{
   position:absolute;
   inset:0;
@@ -63,12 +63,12 @@ html,body{
 
   transform:scale(var(--zoom));
   transform-origin:center center;
-  will-change:transform;
 }
 
 .map{
   position:absolute;
   inset:0;
+  z-index:1;
 
   background-image:url('michurin.jpg');
   background-size:100% auto;
@@ -87,12 +87,24 @@ html,body{
   transform:translate(-50%,-50%) rotate(var(--sheet-rot,0deg));
   transform-origin:center center;
   z-index:2;
+
+  cursor:grab;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+.sheet:active{
+  cursor:grabbing;
 }
 
 .sheet img{
   display:block;
   width:100%;
   height:auto;
+  pointer-events:none;
+  -webkit-user-drag:none;
+  image-rendering:auto;
   box-shadow:
     0 1px 0 rgba(255,255,255,.55),
     0 12px 28px rgba(58,51,38,.18);
@@ -102,6 +114,11 @@ html,body{
   opacity:var(--sheet-op,.78);
   mix-blend-mode:var(--sheet-blend,multiply);
   box-shadow:none;
+}
+
+.sheet.selected{
+  outline:1px dashed rgba(185,162,74,.85);
+  outline-offset:8px;
 }
 
 /* Титр не зумится: он интерфейс стены, а не часть карты. */
@@ -192,6 +209,58 @@ html,body{
     0 0 3px rgba(233,225,210,.9);
 }
 
+/* Двигатель листа */
+.hud{
+  position:absolute;
+  z-index:5;
+  left:clamp(12px,2vw,24px);
+  bottom:clamp(12px,2vh,24px);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px;
+
+  max-width:min(92vw,560px);
+  padding:10px 12px;
+
+  border:1px solid rgba(58,51,38,.24);
+  background:rgba(233,225,210,.84);
+  color:var(--muted);
+  font-size:12px;
+  letter-spacing:.5px;
+}
+
+.hud .label{
+  color:var(--ink);
+  font-style:italic;
+}
+
+.hud .coords{
+  flex:1 1 240px;
+  min-width:240px;
+  color:var(--ink);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  line-height:1.35;
+}
+
+.hud button{
+  height:34px;
+  min-width:34px;
+  padding:0 9px;
+  border:1px solid rgba(58,51,38,.3);
+  background:rgba(255,255,255,.35);
+  color:var(--ink);
+  font-family:Georgia,serif;
+  font-size:12px;
+  line-height:1;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+
+.hud button:hover{
+  background:rgba(255,255,255,.65);
+}
+
 @media(max-width:700px){
   .map{
     background-size:cover;
@@ -205,9 +274,16 @@ html,body{
     text-align:left;
   }
 
+  .hud{
+    left:12px;
+    right:12px;
+    bottom:76px;
+    max-width:none;
+  }
+
   .zoom{
-    left:clamp(12px,4vw,24px);
-    right:auto;
+    right:12px;
+    bottom:16px;
   }
 }
 </style>
@@ -217,9 +293,22 @@ html,body{
 <div class="wall" aria-label="Стена с Мичуринским планом Москвы">
   <div class="surface" id="surface">
     <div class="map" role="img" aria-label="Мичуринский план Москвы"></div>
-        <div class="sheet" style="--sheet-x:24%;--sheet-y:66%;--sheet-w:30%;--sheet-rot:-5deg;">
+
+    <div
+      class="sheet"
+      data-sheet
+      id="sheet01"
+      style="--sheet-x:24%;--sheet-y:66%;--sheet-w:30%;--sheet-rot:-5deg;"
+    >
       <img src="sheet-01.jpg" alt="Авторский лист 01" decoding="async">
     </div>
+
+    <!--
+      Второй лист позже будет копией этого блока:
+      <div class="sheet" data-sheet style="--sheet-x:62%;--sheet-y:38%;--sheet-w:26%;--sheet-rot:4deg;">
+        <img src="sheet-02.jpg" alt="Авторский лист 02" decoding="async">
+      </div>
+    -->
   </div>
 
   <div class="plate">
@@ -234,12 +323,24 @@ html,body{
     <button id="zoomReset" class="reset" type="button" aria-label="Сбросить масштаб">1:1</button>
     <button id="zoomIn" type="button" aria-label="Приблизить">+</button>
   </div>
+
+  <div class="hud" aria-label="Двигатель листа">
+    <span class="label">лист</span>
+    <span class="coords" id="coords">—</span>
+    <button id="rotMinus" type="button" aria-label="Повернуть влево">↺</button>
+    <button id="rotPlus" type="button" aria-label="Повернуть вправо">↻</button>
+    <button id="widthMinus" type="button" aria-label="Уменьшить лист">W−</button>
+    <button id="widthPlus" type="button" aria-label="Увеличить лист">W+</button>
+    <button id="copySheet" type="button">копировать</button>
+  </div>
 </div>
 
 <script>
 (function(){
   var root=document.documentElement;
-  var value=document.getElementById('zoomValue');
+  var surface=document.getElementById('surface');
+
+  var zoomValue=document.getElementById('zoomValue');
   var btnIn=document.getElementById('zoomIn');
   var btnOut=document.getElementById('zoomOut');
   var btnReset=document.getElementById('zoomReset');
@@ -251,27 +352,201 @@ html,body{
   var start=parseFloat(styles.getPropertyValue('--zoom'))||1.02;
   var z=start;
 
-  function render(){
+  function renderZoom(){
     root.style.setProperty('--zoom', z.toFixed(3));
-    if(value) value.textContent=Math.round(z*100)+'%';
+    if(zoomValue) zoomValue.textContent=Math.round(z*100)+'%';
   }
 
-  function set(next){
+  function setZoom(next){
     z=Math.min(max, Math.max(min, next));
-    render();
+    renderZoom();
   }
 
-  if(btnIn) btnIn.addEventListener('click', function(){ set(z+step); });
-  if(btnOut) btnOut.addEventListener('click', function(){ set(z-step); });
-  if(btnReset) btnReset.addEventListener('click', function(){ set(start); });
+  if(btnIn) btnIn.addEventListener('click', function(){ setZoom(z+step); });
+  if(btnOut) btnOut.addEventListener('click', function(){ setZoom(z-step); });
+  if(btnReset) btnReset.addEventListener('click', function(){ setZoom(start); });
 
-  window.addEventListener('keydown', function(e){
-    if(e.key==='+' || e.key==='=') set(z+step);
-    if(e.key==='-' || e.key==='_') set(z-step);
-    if(e.key==='0') set(start);
+  var sheets=[].slice.call(document.querySelectorAll('[data-sheet]'));
+  var coords=document.getElementById('coords');
+  var copyBtn=document.getElementById('copySheet');
+  var selected=null;
+  var drag=null;
+
+  function num(el,name,fallback){
+    var v=getComputedStyle(el).getPropertyValue(name).trim();
+    var n=parseFloat(v);
+    return isFinite(n)?n:fallback;
+  }
+
+  function setVar(el,name,value){
+    el.style.setProperty(name,value);
+  }
+
+  function updateHud(){
+    if(!selected){
+      coords.textContent='лист не выбран';
+      return;
+    }
+    var x=num(selected,'--sheet-x',50);
+    var y=num(selected,'--sheet-y',50);
+    var w=num(selected,'--sheet-w',30);
+    var r=num(selected,'--sheet-rot',0);
+    coords.textContent='x '+x.toFixed(1)+'% · y '+y.toFixed(1)+'% · w '+w.toFixed(1)+'% · rot '+r.toFixed(1)+'°';
+  }
+
+  function select(el){
+    selected=el;
+    sheets.forEach(function(s){
+      s.classList.toggle('selected', s===el);
+    });
+    updateHud();
+  }
+
+  sheets.forEach(function(el){
+    el.addEventListener('pointerdown', function(e){
+      select(el);
+
+      var rect=surface.getBoundingClientRect();
+      drag={
+        el:el,
+        pointerId:e.pointerId,
+        startX:e.clientX,
+        startY:e.clientY,
+        x:num(el,'--sheet-x',50),
+        y:num(el,'--sheet-y',50),
+        rect:rect
+      };
+
+      if(el.setPointerCapture){
+        el.setPointerCapture(e.pointerId);
+      }
+
+      e.preventDefault();
+    });
   });
 
-  render();
+  window.addEventListener('pointermove', function(e){
+    if(!drag || e.pointerId!==drag.pointerId) return;
+
+    var dx=(e.clientX-drag.startX)/drag.rect.width*100;
+    var dy=(e.clientY-drag.startY)/drag.rect.height*100;
+
+    var nx=drag.x+dx;
+    var ny=drag.y+dy;
+
+    nx=Math.max(-20, Math.min(120, nx));
+    ny=Math.max(-20, Math.min(120, ny));
+
+    setVar(drag.el,'--sheet-x', nx.toFixed(2)+'%');
+    setVar(drag.el,'--sheet-y', ny.toFixed(2)+'%');
+
+    updateHud();
+  });
+
+  function endDrag(e){
+    if(!drag) return;
+    if(drag.el.releasePointerCapture && e && e.pointerId===drag.pointerId){
+      drag.el.releasePointerCapture(e.pointerId);
+    }
+    drag=null;
+  }
+
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
+  function adjust(name, delta, minValue, maxValue, unit){
+    if(!selected) return;
+    var v=num(selected,name,30);
+    v=Math.max(minValue, Math.min(maxValue, v+delta));
+    setVar(selected,name, v.toFixed(2)+unit);
+    updateHud();
+  }
+
+  function adjustRot(delta){
+    if(!selected) return;
+    var v=num(selected,'--sheet-rot',0);
+    v=Math.max(-45, Math.min(45, v+delta));
+    setVar(selected,'--sheet-rot', v.toFixed(2)+'deg');
+    updateHud();
+  }
+
+  document.getElementById('rotMinus').addEventListener('click', function(){ adjustRot(-1); });
+  document.getElementById('rotPlus').addEventListener('click', function(){ adjustRot(1); });
+  document.getElementById('widthMinus').addEventListener('click', function(){ adjust('--sheet-w', -2, 8, 80, '%'); });
+  document.getElementById('widthPlus').addEventListener('click', function(){ adjust('--sheet-w', 2, 8, 80, '%'); });
+
+  function flash(msg){
+    if(!copyBtn) return;
+    var old=copyBtn.textContent;
+    copyBtn.textContent=msg;
+    setTimeout(function(){ copyBtn.textContent=old; }, 1200);
+  }
+
+  copyBtn.addEventListener('click', function(){
+    if(!selected) return;
+
+    var x=num(selected,'--sheet-x',50).toFixed(1);
+    var y=num(selected,'--sheet-y',50).toFixed(1);
+    var w=num(selected,'--sheet-w',30).toFixed(1);
+    var r=num(selected,'--sheet-rot',0).toFixed(1);
+
+    var text='--sheet-x:'+x+'%;--sheet-y:'+y+'%;--sheet-w:'+w+'%;--sheet-rot:'+r+'deg;';
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        flash('скопировано');
+      }).catch(function(){
+        window.prompt('Скопируй вручную:', text);
+      });
+    }else{
+      window.prompt('Скопируй вручную:', text);
+    }
+  });
+
+  window.addEventListener('keydown', function(e){
+    if(e.key==='ArrowLeft' || e.key==='ArrowRight' || e.key==='ArrowUp' || e.key==='ArrowDown'){
+      if(!selected) return;
+      e.preventDefault();
+
+      var move=e.shiftKey ? 0.1 : 1;
+      var x=num(selected,'--sheet-x',50);
+      var y=num(selected,'--sheet-y',50);
+
+      if(e.key==='ArrowLeft') x-=move;
+      if(e.key==='ArrowRight') x+=move;
+      if(e.key==='ArrowUp') y-=move;
+      if(e.key==='ArrowDown') y+=move;
+
+      x=Math.max(-20, Math.min(120, x));
+      y=Math.max(-20, Math.min(120, y));
+
+      setVar(selected,'--sheet-x', x.toFixed(2)+'%');
+      setVar(selected,'--sheet-y', y.toFixed(2)+'%');
+      updateHud();
+      return;
+    }
+
+    if(e.key==='+' || e.key==='='){
+      setZoom(z+step);
+      return;
+    }
+
+    if(e.key==='-' || e.key==='_'){
+      setZoom(z-step);
+      return;
+    }
+
+    if(e.key==='0'){
+      setZoom(start);
+      return;
+    }
+  });
+
+  renderZoom();
+
+  if(sheets.length){
+    select(sheets[0]);
+  }
 })();
 </script>
 
