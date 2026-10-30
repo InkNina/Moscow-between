@@ -50,5 +50,12 @@ footer{margin-top:60px;font-size:13px;color:#7d7562}
 </div>
 <footer>inknina · Между нами Москва · сделано сердцем и кодом</footer>
 </div>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js');
+  });
+}
+</script>
 </body>
 </html>
