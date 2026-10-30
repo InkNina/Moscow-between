@@ -26,6 +26,14 @@ h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
 footer{margin-top:60px;font-size:13px;color:#7d7562}
 </style>
 </head>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js');
+  });
+}
+</script>
+
 <body>
 <div class="wrap">
 <h1>Между нами Москва</h1>
