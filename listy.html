@@ -303,6 +303,19 @@ html,body{
   background:rgba(255,255,255,.65);
 }
 
+/* Подпись карты — первая строка в рамочке координат */
+.hud .map-title{
+  flex:1 1 100%;
+  margin-bottom:6px;
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(58,51,38,.18);
+  color:var(--muted);
+  font-size:clamp(9px,2.4vw,11px);
+  font-style:italic;
+  line-height:1.35;
+  letter-spacing:.2px;
+}
+
 /* ===== Мобильный режим: окошко в стену ===== */
 @media(max-width:700px){
   :root{
@@ -423,7 +436,8 @@ html,body{
     <button id="zoomIn" type="button" aria-label="Приблизить">+</button>
   </div>
 
-  <div class="hud" aria-label="Двигатель листа">
+    <div class="hud" aria-label="Двигатель листа">
+    <span class="map-title">План императорского столичного города Москвы, сочиненной под смотрением архитектора Ивана Мичурина в 1739 году</span>
     <span class="label">лист</span>
     <span class="coords" id="coords">—</span>
     <button id="rotMinus" type="button" aria-label="Повернуть влево">↺</button>
