@@ -116,6 +116,17 @@ html,body{
   box-shadow:none;
 }
 
+/* Заглушка-паркет только для муляжей */
+.sheet.mulyazh img{
+  background:
+    linear-gradient(135deg, #d8cdb4 25%, transparent 25%) -10px 0/ 20px 20px,
+    linear-gradient(225deg, #d8cdb4 25%, transparent 25%) -10px 0/ 20px 20px,
+    linear-gradient(315deg, #d8cdb4 25%, transparent 25%) 0 0/ 20px 20px,
+    linear-gradient(45deg,  #d8cdb4 25%, #c9be9e 25%) 0 0/ 20px 20px;
+  background-color:#c9be9e;
+  min-height:120px;
+}
+
 .sheet.selected{
   outline:1px dashed rgba(185,162,74,.85);
   outline-offset:8px;
@@ -294,6 +305,7 @@ html,body{
   <div class="surface" id="surface">
     <div class="map" role="img" aria-label="Мичуринский план Москвы"></div>
 
+    <!-- Реальный лист 01 -->
     <div
       class="sheet"
       data-sheet
@@ -303,12 +315,25 @@ html,body{
       <img src="sheet-01.jpg" alt="Авторский лист 01" decoding="async">
     </div>
 
-    <!--
-      Второй лист позже будет копией этого блока:
-      <div class="sheet" data-sheet style="--sheet-x:62%;--sheet-y:38%;--sheet-w:26%;--sheet-rot:4deg;">
-        <img src="sheet-02.jpg" alt="Авторский лист 02" decoding="async">
-      </div>
-    -->
+    <!-- Муляж 02: правый верх -->
+    <div
+      class="sheet mulyazh"
+      data-sheet
+      id="sheet02"
+      style="--sheet-x:70%;--sheet-y:35%;--sheet-w:20%;--sheet-rot:6deg;"
+    >
+      <img src="sheet-02.jpg" alt="Авторский лист 02" decoding="async">
+    </div>
+
+    <!-- Муляж 03: левый верх -->
+    <div
+      class="sheet mulyazh"
+      data-sheet
+      id="sheet03"
+      style="--sheet-x:40%;--sheet-y:28%;--sheet-w:18%;--sheet-rot:-4deg;"
+    >
+      <img src="sheet-03.jpg" alt="Авторский лист 03" decoding="async">
+    </div>
   </div>
 
   <div class="plate">
