@@ -1,6 +1,11 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Между нами Москва</title>
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e9e1d2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -8,54 +13,565 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Между нами">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Между нами Москва</title>
+
 <style>
-html,body{margin:0;background:#e9e1d2;color:#3a3326;font-family:Georgia,serif}
-.wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}
-h1{font-size:44px;margin:0 0 6px;letter-spacing:1px}
-.sub{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#7d7562;margin:0 0 36px}
-.manifest{font-size:19px;line-height:1.7;border-left:3px solid #b9a24a;padding-left:18px;margin:0 0 44px}
-.doors{display:flex;flex-wrap:wrap;gap:18px}
-.door{flex:1 1 220px;border:1px solid #7d7562;padding:22px;text-decoration:none;color:#3a3326;background:rgba(255,255,255,0.25)}
-.door h2{font-size:20px;margin:0 0 10px}
-.door p{font-size:15px;line-height:1.5;margin:0 0 14px;color:#5a5344}
-.door span{font-size:14px;letter-spacing:1px;border-bottom:1px solid #b9a24a}
-.door:hover{background:rgba(255,255,255,0.5)}
-footer{margin-top:60px;font-size:13px;color:#7d7562}
+*,*::before,*::after{box-sizing:border-box}
+
+:root{
+  --stone-lite:#faf3e3;
+  --stone:#ece2cd;
+  --stone-mid:#ddd0b6;
+  --stone-dark:#b7a98a;
+  --ink:#3a3326;
+  --ink-soft:#5a5344;
+  --gold:#b9a24a;
+
+  --pil-w:clamp(22px,4.4vw,58px);
+  --cornice-h:clamp(34px,5.4vw,60px);
+  --plinth-h:clamp(34px,4.6vw,52px);
+  --gap-side:clamp(16px,4.2vw,52px);
+}
+
+html,body{margin:0}
+body{
+  background:var(--stone);
+  color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ————— СТЕНА ————— */
+.facade{
+  position:relative;
+  min-height:100vh;
+  min-height:100svh;
+  overflow:hidden;
+  isolation:isolate;
+
+  background-color:var(--stone);
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 .38 0 0 0 0 .34 0 0 0 0 .26 0 0 0 .16 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>"),
+    repeating-linear-gradient(90deg,rgba(58,51,38,.035) 0 1px,transparent 1px 7px),
+    repeating-linear-gradient(0deg,rgba(58,51,38,.05) 0 1px,transparent 1px 96px),
+    radial-gradient(120% 90% at 12% -10%,rgba(255,252,240,.85),transparent 62%),
+    linear-gradient(148deg,var(--stone-lite) 0%,var(--stone) 38%,var(--stone-mid) 78%,var(--stone-dark) 100%);
+  background-blend-mode:multiply,overlay,normal,screen,normal;
+  background-attachment:fixed,fixed,fixed,fixed,fixed;
+}
+
+/* ————— КАРНИЗ ЗДАНИЯ ————— */
+.cornice{
+  position:relative;
+  z-index:3;
+  height:var(--cornice-h);
+  background-image:
+    repeating-linear-gradient(90deg,var(--stone-lite) 0 9px,transparent 9px 15px),
+    linear-gradient(180deg,
+      #fffaf0 0 8%,
+      var(--stone) 8% 26%,
+      var(--stone-dark) 26% 31%,
+      var(--stone-mid) 31% 52%,
+      #fdf7ea 52% 60%,
+      var(--stone) 60% 100%);
+  background-size:15px 42%,100% 100%;
+  background-position:0 62%,0 0;
+  background-repeat:repeat,no-repeat;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(58,51,38,.22),
+    0 16px 26px rgba(58,51,38,.20),
+    0 3px 6px rgba(58,51,38,.16);
+}
+
+/* ————— ПИЛЯСТРЫ ————— */
+.pil{
+  position:absolute;
+  z-index:2;
+  top:var(--cornice-h);
+  bottom:var(--plinth-h);
+  width:var(--pil-w);
+  background-image:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.55) 0 2px,
+      transparent 2px 9px,
+      rgba(58,51,38,.10) 9px 11px,
+      transparent 11px 18px),
+    linear-gradient(90deg,#fdf8ec 0%,var(--stone) 42%,var(--stone-mid) 82%,var(--stone-dark) 100%);
+  box-shadow:
+    inset -3px 0 6px rgba(58,51,38,.16),
+    inset 2px 0 0 rgba(255,255,255,.6),
+    6px 0 18px rgba(58,51,38,.12);
+}
+.pil.l{left:0}
+.pil.r{right:0;transform:scaleX(-1)}
+.pil::before,.pil::after{
+  content:"";
+  position:absolute;
+  left:-14%;
+  width:128%;
+  background:linear-gradient(180deg,#fffaf0,var(--stone) 55%,var(--stone-dark));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 10px rgba(58,51,38,.18);
+}
+.pil::before{top:0;height:clamp(16px,2.6vw,30px);border-radius:2px 2px 0 0}
+.pil::after{bottom:0;height:clamp(14px,2.2vw,26px);border-radius:0 0 2px 2px}
+
+/* ————— ВНУТРЕННЕЕ ПОЛЕ ————— */
+.inner{
+  position:relative;
+  z-index:4;
+  max-width:1160px;
+  margin:0 auto;
+  padding:clamp(26px,4.4vw,56px) calc(var(--pil-w) + var(--gap-side)) clamp(30px,5vw,64px);
+}
+
+.carved{
+  color:#6d6350;
+  text-shadow:
+    -1px -1px 1px rgba(58,51,38,.30),
+    1px 1px 0 rgba(255,255,255,.85);
+}
+
+.frieze{
+  text-align:center;
+  padding:clamp(6px,1.4vw,16px) 0 clamp(22px,3.6vw,44px);
+  border-bottom:1px solid rgba(58,51,38,.14);
+  box-shadow:0 1px 0 rgba(255,255,255,.7);
+  margin-bottom:clamp(24px,4vw,48px);
+}
+.frieze h1{
+  font-size:clamp(30px,6.4vw,62px);
+  line-height:1.02;
+  font-weight:400;
+  letter-spacing:.5px;
+  margin:0 0 10px;
+}
+.frieze .sub{
+  font-size:clamp(10px,1.5vw,14px);
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  margin:0;
+}
+
+/* ————— ФАЛЬШ-ОКНА ————— */
+.windows{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:clamp(18px,3.4vw,46px);
+}
+
+.win{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  text-decoration:none;
+  color:inherit;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .4s cubic-bezier(.22,.61,.36,1);
+}
+.win:hover{transform:translateY(-4px)}
+.win:focus-visible{outline:2px solid var(--gold);outline-offset:6px;border-radius:2px}
+
+/* надстройка = багет: балка тянется и держит углы, узор сверху не растягивается */
+.crest{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:0 -2px -3px;          /* наезд на пилястры (±2px) и на раму (-3px): углы сбиты */
+}
+.orn{
+  display:block;
+  width:min(100%,210px);        /* узор фиксирован, не растягивается */
+  margin-bottom:-2px;           /* сцепка узора с балкой */
+  filter:drop-shadow(2px 4px 5px rgba(58,51,38,.22));
+}
+.orn svg{display:block;width:100%;height:auto}
+.beam{
+  width:100%;                   /* балка = ширина рамы, тянется */
+  height:clamp(16px,2.4vw,24px);
+  background:linear-gradient(180deg,
+    #fffaf0 0 18%,
+    var(--stone) 18% 46%,
+    var(--stone-mid) 46% 72%,
+    var(--stone-dark) 72% 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(58,51,38,.2),
+    0 4px 8px rgba(58,51,38,.2);
+}
+
+/* рама: боковые стойки-пилястры + глухая вытянутая панель */
+.frame{
+  position:relative;
+  flex:1 1 auto;
+  display:flex;
+  align-items:stretch;
+  background:linear-gradient(152deg,#fffaf0 0%,var(--stone) 40%,var(--stone-mid) 88%,var(--stone-dark) 100%);
+  box-shadow:
+    inset 2px 2px 0 rgba(255,255,255,.9),
+    inset -2px -2px 0 rgba(58,51,38,.16),
+    5px 9px 20px rgba(58,51,38,.20);
+}
+.post{
+  position:relative;
+  flex:0 0 clamp(11px,1.8vw,20px);
+  background:linear-gradient(90deg,#fffaf0 0%,var(--stone) 45%,var(--stone-mid) 80%,var(--stone-dark) 100%);
+  box-shadow:inset -1px 0 0 rgba(58,51,38,.16),inset 1px 0 0 rgba(255,255,255,.7);
+}
+.post.r{transform:scaleX(-1)}
+.post::before,.post::after{
+  content:"";
+  position:absolute;left:-22%;width:144%;
+  background:linear-gradient(180deg,#fffaf0,var(--stone) 55%,var(--stone-dark));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 5px rgba(58,51,38,.16);
+}
+.post::before{top:0;height:clamp(8px,1.2vw,14px)}
+.post::after{bottom:0;height:clamp(9px,1.3vw,15px)}
+
+/* глухая каменная панель, текст вверху, без терракотовых точек */
+.panel{
+  position:relative;
+  flex:1 1 auto;
+  min-width:0;
+  min-height:clamp(300px,40vw,455px);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding:clamp(22px,3vw,32px) clamp(14px,2vw,22px) clamp(16px,2.2vw,22px);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.5),transparent 22%),
+    linear-gradient(150deg,#fdf8ec 0%,var(--stone) 55%,var(--stone-mid) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(58,51,38,.10),
+    inset 0 0 0 6px rgba(255,255,255,.28),
+    inset 0 0 0 7px rgba(58,51,38,.08),
+    inset 0 2px 6px rgba(58,51,38,.10);
+  transition:box-shadow .4s ease,background .4s ease;
+}
+.panel::before{
+  content:"";
+  position:absolute;
+  left:clamp(10px,1.6vw,16px);right:clamp(10px,1.6vw,16px);
+  top:clamp(9px,1.3vw,13px);
+  height:clamp(10px,1.6vw,16px);
+  background:repeating-linear-gradient(0deg,
+    rgba(58,51,38,.16) 0 1px,
+    transparent 1px 3px,
+    rgba(255,255,255,.7) 3px 4px);
+  box-shadow:0 1px 0 rgba(58,51,38,.10);
+}
+.win:hover .panel{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.7),transparent 26%),
+    linear-gradient(150deg,#fffdf5 0%,#f3ead6 55%,var(--stone) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(185,162,74,.45),
+    inset 0 0 0 6px rgba(255,255,255,.5),
+    inset 0 0 0 7px rgba(185,162,74,.30),
+    inset 0 2px 6px rgba(58,51,38,.08);
+}
+
+.panel h2{
+  position:relative;z-index:1;
+  font-size:clamp(17px,2.1vw,22px);
+  font-weight:400;
+  line-height:1.2;
+  margin:clamp(22px,3vw,32px) 0 8px;
+  color:var(--ink);
+  text-shadow:-1px -1px 1px rgba(58,51,38,.18),1px 1px 0 rgba(255,255,255,.8);
+}
+.panel p{
+  position:relative;z-index:1;
+  font-size:clamp(13px,1.5vw,15px);
+  line-height:1.55;
+  margin:0 0 12px;
+  color:var(--ink-soft);
+}
+.go{
+  position:relative;z-index:1;
+  display:inline-block;
+  font-size:12px;
+  letter-spacing:.12em;
+  color:#8a7a3e;
+  border-bottom:1px solid rgba(185,162,74,.55);
+  padding-bottom:2px;
+  transition:color .3s ease,border-color .3s ease;
+}
+.win:hover .go{color:var(--gold);border-color:var(--gold)}
+
+/* подоконник */
+.sill{
+  position:relative;
+  height:clamp(11px,1.8vw,18px);
+  margin:0 -2px -1px;
+  background:linear-gradient(180deg,#fffaf0 0 30%,var(--stone) 30% 62%,var(--stone-dark) 62% 100%);
+  box-shadow:0 8px 14px rgba(58,51,38,.26),inset 0 1px 0 rgba(255,255,255,.9);
+}
+.sill::before,.sill::after{
+  content:"";
+  position:absolute;top:100%;width:16px;height:13px;
+  background:linear-gradient(180deg,var(--stone-mid),var(--stone-dark));
+  clip-path:polygon(0 0,100% 0,72% 100%,28% 100%);
+}
+.sill::before{left:4%}
+.sill::after{right:4%}
+
+/* ————— СОЛНЕЧНЫЕ ЧАСЫ ————— */
+.dialwrap{
+  display:flex;
+  justify-content:center;
+  padding:clamp(26px,4.6vw,54px) 0 clamp(10px,2vw,22px);
+}
+.dial{
+  width:min(287px,56%);
+  height:auto;
+  filter:drop-shadow(7px 11px 13px rgba(58,51,38,.3));
+}
+.dial .plate{fill:url(#dialStone)}
+.dial .edge{stroke:rgba(58,51,38,.34);stroke-width:1.4;fill:none}
+.dial .bevel{stroke:rgba(255,255,255,.55);stroke-width:1.2;fill:none}
+.dial .hour{stroke:rgba(58,51,38,.42);stroke-width:1.1}
+.dial .num{font-family:Georgia,serif;font-size:15px;letter-spacing:.5px;text-anchor:middle;dominant-baseline:middle}
+.dial .num-lit{fill:rgba(255,255,255,.8)}
+.dial .num-ink{fill:#5c5340}
+.dial .scuff{fill:rgba(255,255,255,.3)}
+.dial .chip{fill:var(--stone)}
+.dial .pin{fill:url(#dialStone);stroke:rgba(58,51,38,.4);stroke-width:1}
+.dial .stub{stroke:#5c5340;stroke-width:2.4;stroke-linecap:round}
+.dial .penumbra{stroke:rgba(58,51,38,.16);stroke-width:7;stroke-linecap:round}
+.dial .umbra{stroke:rgba(48,42,30,.62);stroke-width:2.6;stroke-linecap:round}
+.dial[data-night] .umbra,
+.dial[data-night] .penumbra{opacity:0}
+
+/* ————— ПОСВЯЩЕНИЕ ————— */
+.inscription{
+  max-width:62ch;
+  margin:clamp(18px,3vw,34px) auto 0;
+  text-align:center;
+  font-size:clamp(14px,1.7vw,18px);
+  line-height:1.75;
+}
+
+/* ————— ЦОКОЛЬ ————— */
+.plinth{
+  position:relative;
+  z-index:3;
+  min-height:var(--plinth-h);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px calc(var(--pil-w) + var(--gap-side));
+  text-align:center;
+  font-size:12px;
+  letter-spacing:.06em;
+  color:#6d6350;
+  background:linear-gradient(180deg,var(--stone-mid),var(--stone-dark) 70%,#a2947a);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 3px 8px rgba(58,51,38,.18);
+  text-shadow:1px 1px 0 rgba(255,255,255,.6);
+}
+
+/* ————— ТЕЛЕФОН ————— */
+@media(max-width:760px){
+  .windows{grid-template-columns:1fr;justify-items:center;gap:clamp(30px,8vw,44px)}
+  .win{max-width:300px}
+  .panel{min-height:370px}
+  .frieze{padding-bottom:clamp(16px,5vw,26px);margin-bottom:clamp(18px,6vw,30px)}
+  .dial{width:min(360px,92%)}
+  .inscription{text-align:left;max-width:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .win,.panel,.go{transition:none}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>Между нами Москва</h1>
-<p class="sub">семь высоток · семь богинь · один город</p>
-<p class="manifest">Богини не ушли, они переехали. Семь сталинских высоток — места силы греко-римского пантеона. Этот сайт — ещё один слой в городском и внутреннем ландшафте: для московских богов, заблудившихся в отсутствие Олимпа.</p>
-<div class="doors">
-<a class="door" href="prolog.html">
-<h2>Полифоническая история</h2>
-<p>Графический роман: пролог. Один мир в нескольких голосах.</p>
-<span>войти в историю →</span>
-</a>
-<a class="door" href="bogini.html">
-<h2>Семь сестёр</h2>
-<p>Карта мест силы и экскурсия по Москве. Семь высоток, семь богинь, один город между ними.</p>
-<span>листать карусель →</span>
-</a>
-<a class="door" href="listy.html">
-<h2>Авторское</h2>
-<p>Карта, заметки, мета-слой. Что я несу в мир и чем делюсь.</p>
-<span>разглядывать карту →</span>
-</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="stoneG" x1="0" y1="0" x2=".35" y2="1">
+      <stop offset="0" stop-color="#fffaf0"/>
+      <stop offset=".45" stop-color="#ece2cd"/>
+      <stop offset="1" stop-color="#b7a98a"/>
+    </linearGradient>
+    <linearGradient id="dialStone" x1=".1" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#fbf5e6"/>
+      <stop offset=".5" stop-color="#e8ddc6"/>
+      <stop offset="1" stop-color="#c3b495"/>
+    </linearGradient>
+    <clipPath id="dialHalf"><rect x="0" y="10" width="400" height="200"/></clipPath>
+
+    <!-- узор надстройки: волюты + кубик + шар. плиты нет — она стала CSS-балкой. -->
+    <symbol id="crest" viewBox="0 0 240 98">
+      <g>
+        <path fill="url(#stoneG)" d="M108 58 C86 46 56 50 42 70 C34 82 40 96 54 96 C46 88 49 79 59 77 C71 74 85 80 95 88 C101 92 106 94 108 92 Z"/>
+        <path fill="none" stroke="rgba(58,51,38,.30)" stroke-width="3" stroke-linecap="round" d="M100 66 C82 58 62 61 53 72"/>
+        <path fill="none" stroke="rgba(58,51,38,.26)" stroke-width="2.6" stroke-linecap="round" d="M97 76 C84 70 70 72 63 81"/>
+      </g>
+      <g transform="translate(240 0) scale(-1 1)">
+        <path fill="url(#stoneG)" d="M108 58 C86 46 56 50 42 70 C34 82 40 96 54 96 C46 88 49 79 59 77 C71 74 85 80 95 88 C101 92 106 94 108 92 Z"/>
+        <path fill="none" stroke="rgba(58,51,38,.30)" stroke-width="3" stroke-linecap="round" d="M100 66 C82 58 62 61 53 72"/>
+        <path fill="none" stroke="rgba(58,51,38,.26)" stroke-width="2.6" stroke-linecap="round" d="M97 76 C84 70 70 72 63 81"/>
+      </g>
+      <g fill="url(#stoneG)">
+        <rect x="104" y="56" width="32" height="40"/>
+        <rect x="99" y="52" width="42" height="6"/>
+        <circle cx="120" cy="38" r="15"/>
+      </g>
+      <circle cx="114" cy="33" r="4.2" fill="rgba(255,255,255,.8)"/>
+      <rect x="104" y="56" width="32" height="2" fill="rgba(255,255,255,.5)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="facade">
+  <div class="cornice" aria-hidden="true"></div>
+  <i class="pil l" aria-hidden="true"></i>
+  <i class="pil r" aria-hidden="true"></i>
+
+  <div class="inner">
+
+    <header class="frieze">
+      <h1 class="carved">Между нами Москва</h1>
+      <p class="sub carved">семь высоток · семь богинь · один город</p>
+    </header>
+
+    <div class="windows">
+
+      <a class="win" href="prolog.html">
+        <span class="crest" aria-hidden="true">
+          <span class="orn"><svg viewBox="0 0 240 98"><use href="#crest"/></svg></span>
+          <span class="beam"></span>
+        </span>
+        <span class="frame">
+          <i class="post l" aria-hidden="true"></i>
+          <span class="panel">
+            <h2>Полифоническая история</h2>
+            <p>Графический роман: пролог. Один мир в нескольких голосах.</p>
+            <span class="go">войти в историю →</span>
+          </span>
+          <i class="post r" aria-hidden="true"></i>
+        </span>
+        <span class="sill" aria-hidden="true"></span>
+      </a>
+
+      <a class="win" href="bogini.html">
+        <span class="crest" aria-hidden="true">
+          <span class="orn"><svg viewBox="0 0 240 98"><use href="#crest"/></svg></span>
+          <span class="beam"></span>
+        </span>
+        <span class="frame">
+          <i class="post l" aria-hidden="true"></i>
+          <span class="panel">
+            <h2>Семь сестёр</h2>
+            <p>Карта мест силы и экскурсия по Москве. Семь высоток, семь богинь, один город между ними.</p>
+            <span class="go">листать карусель →</span>
+          </span>
+          <i class="post r" aria-hidden="true"></i>
+        </span>
+        <span class="sill" aria-hidden="true"></span>
+      </a>
+
+      <a class="win" href="listy.html">
+        <span class="crest" aria-hidden="true">
+          <span class="orn"><svg viewBox="0 0 240 98"><use href="#crest"/></svg></span>
+          <span class="beam"></span>
+        </span>
+        <span class="frame">
+          <i class="post l" aria-hidden="true"></i>
+          <span class="panel">
+            <h2>Авторское</h2>
+            <p>Карта, заметки, мета-слой. Что я несу в мир и чем делюсь.</p>
+            <span class="go">разглядывать карту →</span>
+          </span>
+          <i class="post r" aria-hidden="true"></i>
+        </span>
+        <span class="sill" aria-hidden="true"></span>
+      </a>
+
+    </div>
+
+    <div class="dialwrap">
+      <svg id="dial" class="dial" viewBox="0 0 400 206" role="img" aria-label="Солнечные часы">
+        <g clip-path="url(#dialHalf)">
+          <circle class="plate" cx="200" cy="10" r="192"/>
+          <circle class="edge" cx="200" cy="10" r="192"/>
+          <circle class="bevel" cx="200" cy="10" r="181"/>
+        </g>
+        <line class="edge" x1="8" y1="10" x2="392" y2="10"/>
+        <g class="hour">
+          <line x1="200" y1="10" x2="14.5" y2="59.7"/>
+          <line x1="200" y1="10" x2="29.7" y2="98.6"/>
+          <line x1="200" y1="10" x2="52.9" y2="133.4"/>
+          <line x1="200" y1="10" x2="83.1" y2="162.3"/>
+          <line x1="200" y1="10" x2="118.9" y2="184"/>
+          <line x1="200" y1="10" x2="158.4" y2="197.4"/>
+          <line x1="200" y1="10" x2="200" y2="202"/>
+          <line x1="200" y1="10" x2="241.6" y2="197.4"/>
+          <line x1="200" y1="10" x2="281.1" y2="184"/>
+          <line x1="200" y1="10" x2="316.9" y2="162.3"/>
+          <line x1="200" y1="10" x2="347.1" y2="133.4"/>
+          <line x1="200" y1="10" x2="370.3" y2="98.6"/>
+          <line x1="200" y1="10" x2="385.5" y2="59.7"/>
+        </g>
+        <g>
+          <text class="num num-lit" x="52.1" y="88.7">VII</text><text class="num num-ink" x="51" y="87.6">VII</text>
+          <text class="num num-lit" x="72.4" y="119.1">VIII</text><text class="num num-ink" x="71.3" y="118">VIII</text>
+          <text class="num num-lit" x="98.8" y="144.4">IX</text><text class="num num-ink" x="97.7" y="143.3">IX</text>
+          <text class="num num-lit" x="130.1" y="163.4">X</text><text class="num num-ink" x="129" y="162.3">X</text>
+          <text class="num num-lit" x="164.7" y="175.1">XI</text><text class="num num-ink" x="163.6" y="174">XI</text>
+          <text class="num num-lit" x="201.1" y="179.1">XII</text><text class="num num-ink" x="200" y="178">XII</text>
+          <text class="num num-lit" x="237.5" y="175.1">I</text><text class="num num-ink" x="236.4" y="174">I</text>
+          <text class="num num-lit" x="272.1" y="163.4">II</text><text class="num num-ink" x="271" y="162.3">II</text>
+          <text class="num num-lit" x="303.4" y="144.4">III</text><text class="num num-ink" x="302.3" y="143.3">III</text>
+          <text class="num num-lit" x="329.8" y="119.1">IIII</text><text class="num num-ink" x="328.7" y="118">IIII</text>
+          <text class="num num-lit" x="350.1" y="88.7">V</text><text class="num num-ink" x="349" y="87.6">V</text>
+        </g>
+        <ellipse class="scuff" cx="120" cy="120" rx="34" ry="9"/>
+        <ellipse class="scuff" cx="286" cy="96" rx="22" ry="6"/>
+        <path class="chip" d="M356 40 l10 6 l-8 6 z"/>
+        <g id="gnomon" transform="rotate(0 200 10)">
+          <line class="penumbra" x1="200" y1="10" x2="200" y2="196"/>
+          <line class="umbra" x1="200" y1="10" x2="200" y2="196"/>
+        </g>
+        <line class="stub" x1="200" y1="10" x2="188" y2="1"/>
+        <circle class="pin" cx="200" cy="10" r="6"/>
+      </svg>
+    </div>
+
+    <p class="inscription carved">Богини не ушли, они переехали. Семь сталинских высоток — места силы греко-римского пантеона. Этот сайт — ещё один слой в городском и внутреннем ландшафте: для московских богов, заблудившихся в отсутствие Олимпа.</p>
+
+  </div>
+
+  <footer class="plinth">inknina · Между нами Москва · сделано сердцем и кодом</footer>
 </div>
-<footer>inknina · Между нами Москва · сделано сердцем и кодом</footer>
-</div>
+
 <script>
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
     navigator.serviceWorker.register('sw.js');
   });
 }
+
+(function(){
+  var dial=document.getElementById('dial');
+  var g=document.getElementById('gnomon');
+  if(!dial||!g)return;
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function tick(){
+    var now=new Date();
+    var msk=new Date(now.getTime()+now.getTimezoneOffset()*60000+3*3600000);
+    var h=msk.getHours()+msk.getMinutes()/60+msk.getSeconds()/3600;
+    if(h<6||h>18){dial.setAttribute('data-night','1');return;}
+    dial.removeAttribute('data-night');
+    var ang=-75+150*((h-6)/12);
+    g.setAttribute('transform','rotate('+ang.toFixed(2)+' 200 10)');
+  }
+  tick();
+  if(!rm){setInterval(tick,30000);}
+})();
 </script>
+
 </body>
 </html>
