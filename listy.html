@@ -364,7 +364,7 @@ html,body{
       <img src="sheet-03.jpg" alt="Авторский лист 03" decoding="async">
     </div>
   </div>
-       <!-- Лист 04: иллюстрация Павла Соколова, в рамке с подписью -->
+           <!-- Лист 04: иллюстрация Павла Соколова, в рамке с подписью -->
     <div
       class="sheet framed"
       data-sheet
@@ -376,6 +376,13 @@ html,body{
         <span class="credit">автор Павел Соколов</span>
       </div>
     </div>
+  </div><!-- /surface: стена закончилась -->
+
+  <div class="plate">
+    <a class="back" href="index.html">← на главную</a>
+    <h1>Авторские листы</h1>
+    <p class="sub">стена · карта · коллаж</p>
+  </div>
 
   <div class="zoom" aria-label="Масштаб стены">
     <button id="zoomOut" type="button" aria-label="Отдалить">−</button>
@@ -393,9 +400,7 @@ html,body{
     <button id="widthPlus" type="button" aria-label="Увеличить лист">W+</button>
     <button id="copySheet" type="button">копировать</button>
   </div>
-</div>
-
-<script>
+</div><!-- /wall -->
 (function(){
   var root=document.documentElement;
   var surface=document.getElementById('surface');
