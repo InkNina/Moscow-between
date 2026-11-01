@@ -115,6 +115,18 @@ html,body{
   mix-blend-mode:var(--sheet-blend,multiply);
   box-shadow:none;
 }
+
+/* Заглушка-паркет только для муляжей (если вдруг снова понадобятся) */
+.sheet.mulyazh img{
+  background:
+    linear-gradient(135deg, #d8cdb4 25%, transparent 25%) -10px 0/ 20px 20px,
+    linear-gradient(225deg, #d8cdb4 25%, transparent 25%) -10px 0/ 20px 20px,
+    linear-gradient(315deg, #d8cdb4 25%, transparent 25%) 0 0/ 20px 20px,
+    linear-gradient(45deg,  #d8cdb4 25%, #c9be9e 25%) 0 0/ 20px 20px;
+  background-color:#c9be9e;
+  min-height:120px;
+}
+
 /* Рамка с подписью для гостевого листа */
 .sheet.framed{
   container-type:inline-size;
@@ -144,16 +156,6 @@ html,body{
   font-size:10px;
   font-size:4cqw;
   line-height:1.2;
-}
-/* Заглушка-паркет только для муляжей */
-.sheet.mulyazh img{
-  background:
-    linear-gradient(135deg, #d8cdb4 25%, transparent 25%) -10px 0/ 20px 20px,
-    linear-gradient(225deg, #d8cdb4 25%, transparent 25%) -10px 0/ 20px 20px,
-    linear-gradient(315deg, #d8cdb4 25%, transparent 25%) 0 0/ 20px 20px,
-    linear-gradient(45deg,  #d8cdb4 25%, #c9be9e 25%) 0 0/ 20px 20px;
-  background-color:#c9be9e;
-  min-height:120px;
 }
 
 .sheet.selected{
@@ -301,10 +303,40 @@ html,body{
   background:rgba(255,255,255,.65);
 }
 
+/* ===== Мобильный режим: окошко в стену ===== */
 @media(max-width:700px){
+  :root{
+    --zoom:1;
+    --zoom-min:1;
+  }
+
+  /* Стена становится окном: её можно панорамировать */
+  .wall{
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* Виртуальная стена: высота во весь экран, ширина по пропорции карты */
+  .surface{
+    inset:auto;
+    top:0;
+    left:0;
+    height:100vh;
+    height:100svh;
+    aspect-ratio:var(--map-ar,1.4);
+    transform-origin:0 0;
+  }
+
+  /* Карта не тянется: лежит в своей пропорции */
   .map{
-    background-size:cover;
-    background-position:center center;
+    background-size:100% 100%;
+  }
+
+  /* Интерфейс прибит к экрану, не скроллится со стеной */
+  .plate,
+  .zoom,
+  .hud{
+    position:fixed;
   }
 
   .plate{
@@ -334,19 +366,19 @@ html,body{
   <div class="surface" id="surface">
     <div class="map" role="img" aria-label="Мичуринский план Москвы"></div>
 
-    <!-- Реальный лист 01 -->
+    <!-- Лист 01: сдвинут вправо, над розой -->
     <div
       class="sheet"
       data-sheet
       id="sheet01"
-            style="--sheet-x:78%;--sheet-y:52%;--sheet-w:22%;--sheet-rot:5deg;"
+      style="--sheet-x:78%;--sheet-y:52%;--sheet-w:22%;--sheet-rot:5deg;"
     >
       <img src="sheet-01.jpg" alt="Авторский лист 01" decoding="async">
     </div>
 
-    <!-- Муляж 02: правый верх -->
+    <!-- Лист 02 -->
     <div
-      class="sheet mulyazh"
+      class="sheet"
       data-sheet
       id="sheet02"
       style="--sheet-x:70%;--sheet-y:35%;--sheet-w:20%;--sheet-rot:6deg;"
@@ -354,17 +386,17 @@ html,body{
       <img src="sheet-02.jpg" alt="Авторский лист 02" decoding="async">
     </div>
 
-    <!-- Муляж 03: левый верх -->
+    <!-- Лист 03 -->
     <div
-      class="sheet mulyazh"
+      class="sheet"
       data-sheet
       id="sheet03"
       style="--sheet-x:40%;--sheet-y:28%;--sheet-w:18%;--sheet-rot:-4deg;"
     >
       <img src="sheet-03.jpg" alt="Авторский лист 03" decoding="async">
     </div>
-  </div>
-           <!-- Лист 04: иллюстрация Павла Соколова, в рамке с подписью -->
+
+    <!-- Лист 04: иллюстрация Павла Соколова, в рамке с подписью -->
     <div
       class="sheet framed"
       data-sheet
@@ -376,7 +408,7 @@ html,body{
         <span class="credit">автор Павел Соколов</span>
       </div>
     </div>
-  </div><!-- /surface: стена закончилась -->
+  </div><!-- /surface: стена закончилась, дальше интерфейс окна -->
 
   <div class="plate">
     <a class="back" href="index.html">← на главную</a>
@@ -401,6 +433,8 @@ html,body{
     <button id="copySheet" type="button">копировать</button>
   </div>
 </div><!-- /wall -->
+
+<script>
 (function(){
   var root=document.documentElement;
   var surface=document.getElementById('surface');
@@ -606,6 +640,27 @@ html,body{
       return;
     }
   });
+
+  /* Мобильный режим: окно в стену */
+  var wallEl=document.querySelector('.wall');
+
+  function centerWall(){
+    if(window.innerWidth<=700 && wallEl){
+      var w=surface.getBoundingClientRect().width;
+      wallEl.scrollLeft=Math.max(0,(w-wallEl.clientWidth)/2);
+    }
+  }
+
+  var mapImg=new Image();
+  mapImg.src='michurin.jpg';
+  mapImg.onload=function(){
+    if(mapImg.naturalWidth && mapImg.naturalHeight){
+      root.style.setProperty('--map-ar',(mapImg.naturalWidth/mapImg.naturalHeight).toFixed(4));
+    }
+    centerWall();
+  };
+
+  window.addEventListener('resize', centerWall);
 
   renderZoom();
 
